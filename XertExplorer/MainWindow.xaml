@@ -5,8 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XertExplorer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="XertExplorer" Height="700" Width="1000">
     <Grid>
-
-    </Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="150"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<ScrollViewer Grid.Column="1" Grid.Row="2">
+			<StackPanel>
+				<TextBlock Text="Workouts" Margin="10" FontSize="22" FontWeight="Medium"/>
+				<StackPanel Margin="20 0">
+					<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding XertWorkout}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="10" Width="110" Height="160">
+									<StackPanel>
+										<Border Width="100" Height="100" CornerRadius="5" Margin="5">
+											<Border.Effect>
+												<DropShadowEffect ShadowDepth="1"/>
+											</Border.Effect>
+											<Border.Background>
+												<ImageBrush ImageSource="{Binding thumb}"/>
+											</Border.Background>
+										</Border>
+										<TextBlock Margin="5" Text="{Binding focus, StringFormat={}{0:C}}" FontSize="17" FontFamily="Franklin Gothic Medium"/>
+										<TextBlock Margin="5 0" Text="{Binding name}" FontSize="15"/>
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</StackPanel>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
 </Window>
