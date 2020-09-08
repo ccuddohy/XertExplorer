@@ -16,36 +16,47 @@
 			<ColumnDefinition Width="150"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<ScrollViewer Grid.Column="1" Grid.Row="2">
-			<StackPanel>
-				<TextBlock Text="Workouts" Margin="10" FontSize="22" FontWeight="Medium"/>
-				<StackPanel Margin="20 0">
-					<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding XertWorkout}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Border Margin="10" Width="110" Height="160">
-									<StackPanel>
-										<Border Width="100" Height="100" CornerRadius="5" Margin="5">
-											<Border.Effect>
-												<DropShadowEffect ShadowDepth="1"/>
-											</Border.Effect>
-											<Border.Background>
-												<ImageBrush ImageSource="{Binding thumb}"/>
-											</Border.Background>
-										</Border>
-										<TextBlock Margin="5" Text="{Binding focus, StringFormat={}{0:C}}" FontSize="17" FontFamily="Franklin Gothic Medium"/>
-										<TextBlock Margin="5 0" Text="{Binding name}" FontSize="15"/>
-									</StackPanel>
-								</Border>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<WrapPanel/>
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-					</ItemsControl>
-				</StackPanel>
+		<ScrollViewer Grid.Column="1" Grid.Row="2" Background="#FFF1F1F1">
+			<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 0">
+				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding XertWorkout}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border Margin="10" Width="900"  Height="220" Background="LightSteelBlue">
+								<StackPanel Orientation="Horizontal">
+									<Border Width="350" Height="200" CornerRadius="5" Margin="10">
+										<Border.Effect>
+											<DropShadowEffect ShadowDepth="1"/>
+										</Border.Effect>
+										<Border.Background>
+											<ImageBrush ImageSource="{Binding thumb}"/>
+										</Border.Background>
+									</Border>
+									<!--<StackPanel Orientation="Vertical">
+										<TextBlock Padding="50,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
+										<TextBlock Text="{Binding focus, StringFormat='Focus: {0}'}" FontSize="16" FontFamily="Arial"/>
+										<TextBlock Text="{Binding difficulty, StringFormat='Difficulty: {0:#,#.0}'}" FontSize="16" FontFamily="Arial"/>
+										<TextBlock Text="{Binding duration, StringFormat='Duration: {0}'}" FontSize="16" FontFamily="Arial"/>
+										<TextBlock Text="{Binding description, StringFormat='Description: {0}'}" TextWrapping="Wrap" FontSize="16" FontFamily="Arial"/>
+									</StackPanel>-->
+									<DockPanel>
+										<DockPanel DockPanel.Dock="Top">
+											<TextBlock Padding="50,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
+										</DockPanel>
+										<DockPanel DockPanel.Dock="Top">
+											<TextBlock TextWrapping="Wrap" 
+													   Text="{Binding description, StringFormat='Description: {0}'}" FontSize="16" FontFamily="Arial"/>
+										</DockPanel>
+
+									</DockPanel>
+								</StackPanel>
+
+							</Border>
+						</DataTemplate>
+
+
+
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
 			</StackPanel>
 		</ScrollViewer>
 	</Grid>
