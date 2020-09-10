@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XertExplorer"
         mc:Ignorable="d"
-        Title="XertExplorer" Height="700" Width="1000">
+        Title="XertExplorer" Height="700" Width="1200">
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40"/>
@@ -21,7 +21,7 @@
 				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding XertWorkout}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Border Margin="10" Width="900"  Height="220" Background="LightSteelBlue">
+							<Border Margin="10" Width="980"  Height="250" Background="LightSteelBlue">
 								<StackPanel Orientation="Horizontal">
 									<Border Width="350" Height="200" CornerRadius="5" Margin="10">
 										<Border.Effect>
@@ -31,23 +31,18 @@
 											<ImageBrush ImageSource="{Binding thumb}"/>
 										</Border.Background>
 									</Border>
-									<!--<StackPanel Orientation="Vertical">
-										<TextBlock Padding="50,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
-										<TextBlock Text="{Binding focus, StringFormat='Focus: {0}'}" FontSize="16" FontFamily="Arial"/>
-										<TextBlock Text="{Binding difficulty, StringFormat='Difficulty: {0:#,#.0}'}" FontSize="16" FontFamily="Arial"/>
-										<TextBlock Text="{Binding duration, StringFormat='Duration: {0}'}" FontSize="16" FontFamily="Arial"/>
-										<TextBlock Text="{Binding description, StringFormat='Description: {0}'}" TextWrapping="Wrap" FontSize="16" FontFamily="Arial"/>
-									</StackPanel>-->
-									<DockPanel>
-										<DockPanel DockPanel.Dock="Top">
-											<TextBlock Padding="50,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
-										</DockPanel>
-										<DockPanel DockPanel.Dock="Top">
-											<TextBlock TextWrapping="Wrap" 
-													   Text="{Binding description, StringFormat='Description: {0}'}" FontSize="16" FontFamily="Arial"/>
-										</DockPanel>
-
-									</DockPanel>
+									
+									<StackPanel Orientation="Vertical">
+										<StackPanel>
+											<TextBlock Padding="40,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
+										</StackPanel>
+										<StackPanel>
+											<TextBlock Padding="0,0,0,3" Text="{Binding focus, StringFormat='- Focus: {0}'}" FontSize="14" FontFamily="Arial"/>
+											<TextBlock Padding="0,0,0,3" Text="{Binding difficulty, StringFormat='- Difficulty: {0:#,#}'}" FontSize="14" FontFamily="Arial"/>
+											<TextBlock Padding="0,0,0,10" Text="{Binding duration, StringFormat='- Duration: {0}'}" FontSize="14" FontFamily="Arial"/>
+											<TextBlock Padding="0,0,0,0" MaxWidth="580" TextWrapping="Wrap" Text="{Binding description, StringFormat='- Description:{0}'}" FontSize="14" FontFamily="Arial"/>
+										</StackPanel>
+									</StackPanel>
 								</StackPanel>
 
 							</Border>
