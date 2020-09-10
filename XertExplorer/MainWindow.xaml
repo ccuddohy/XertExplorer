@@ -9,19 +9,21 @@
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40"/>
-			<RowDefinition Height="50"/>
+			<RowDefinition Height="80"/>
+			<RowDefinition Height="60"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="150"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<ScrollViewer Grid.Column="1" Grid.Row="2" Background="#FFF1F1F1">
+		<Label Margin="5,0,0,10" Padding="200,10,0,0" Content="Workouts" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
+		<ScrollViewer Grid.Column="1" Grid.Row="3" Background="DarkCyan">
 			<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 0">
 				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding XertWorkout}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Border Margin="10" Width="980"  Height="250" Background="LightSteelBlue">
+							<Border Margin="10" Width="980"  Height="250" Background="WhiteSmoke">
 								<StackPanel Orientation="Horizontal">
 									<Border Width="350" Height="200" CornerRadius="5" Margin="10">
 										<Border.Effect>
