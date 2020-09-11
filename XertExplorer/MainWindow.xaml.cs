@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -25,6 +26,7 @@ namespace XertExplorer
 	public partial class MainWindow : Window
 	{
 		List<XertWorkout> AllWorkouts;
+		ObservableCollection<XertWorkout> FilteredWorkouts;
 
 		public MainWindow()
 		{
@@ -35,7 +37,8 @@ namespace XertExplorer
 				AllWorkouts = GetWorkouts("workouts.json");
 				if (AllWorkouts.Count > 0)
 				{
-					ListViewWorkouts.ItemsSource = AllWorkouts;
+					FilteredWorkouts = new ObservableCollection<XertWorkout>(AllWorkouts);
+					ListViewWorkouts.ItemsSource = FilteredWorkouts;
 				}
 				else
 				{
@@ -55,6 +58,13 @@ namespace XertExplorer
 
 		private void HandleEndurCheck(object sender, RoutedEventArgs e)
 		{
+			if(null == FilteredWorkouts)
+			{
+				return;
+			}
+			List<XertWorkout> filteredItems = FilteredWorkouts.Where(X => X.focus == "Endurance").ToList();
+			FilteredWorkouts = new ObservableCollection<XertWorkout>(filteredItems);
+			ListViewWorkouts.ItemsSource = FilteredWorkouts;
 		}
 
 		private void HandleEndurUnchecked(object sender, RoutedEventArgs e)
@@ -130,5 +140,7 @@ namespace XertExplorer
 			List<XertWorkout> wkouts = JsonSerializer.Deserialize<List<XertWorkout>>(JSONtxt);//JsonSerializer.DeserializeObject<List<XertWorkout>>(JSONtxt);
 			return wkouts;
 		}
+
+
 	}
 }

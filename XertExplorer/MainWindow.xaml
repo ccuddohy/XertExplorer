@@ -27,7 +27,7 @@
 		<Label Margin="5,0,0,0" Padding="30,10,0,0" Content="Filters" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="20" FontFamily="Arial" Foreground="Black"/>
 		<Rectangle Grid.Row="2" Grid.Column="1"  Fill="Silver" />
 		<Label Margin="5,0,0,0" Padding="50,5,0,0" Content="Sort:" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" FontFamily="Copperplate" Foreground="RoyalBlue"/>
-		<Rectangle Grid.Row="3" Grid.Column="0" Fill="AliceBlue" />
+		<Rectangle Grid.Row="3" Grid.Column="0" Fill="#FFF0F8FF" />
 		<Label Margin="5,0,0,10" Padding="200,5,0,0" Content="Workouts" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
 		<ScrollViewer Grid.Column="1" Grid.Row="3" Background="DarkCyan">
 			<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 0">
@@ -65,7 +65,7 @@
 			</StackPanel>
 		</ScrollViewer>
 
-		<TextBlock Text="Focus" Margin="5,0,5,0" Padding="5, 10, 0, 0" FontFamily="Arial" FontSize="18" FontWeight="Bold" Grid.Row="3"/>
+		<Label Margin="5,0,5,0" Grid.Row="3" Grid.Column="0" Padding="5,10,0,0" Content="Focus" FontSize="16" FontFamily="Arial" />
 		<CheckBox x:Name="EnduranceFlt" Grid.Row="3"  Margin="10,40,0,0" Content="Endurance" Checked="HandleEndurCheck" Unchecked="HandleEndurUnchecked" />
 		<CheckBox x:Name="ClimberFlt" Grid.Row="3"  Margin="10,60,0,0" Content="Climber" Checked="HandleClimberCheck" Unchecked="HandleClimberUnchecked" />
 		<CheckBox x:Name="GSFlt" Grid.Row="3"  Margin="10,80,0,0" Content="GC" Checked="HandleGCCheck" Unchecked="HandleGCUnchecked" />
@@ -74,6 +74,6 @@
 		<CheckBox x:Name="PuncheurFlt" Grid.Row="3"  Margin="10,140,0,0" Content="Puncheur" Checked="HandlePuncheurCheck" Unchecked="HandlePuncheurUnchecked" />
 		<CheckBox x:Name="PursuiterFlt" Grid.Row="3"  Margin="10,160,0,0" Content="Pursuiter" Checked="HandlePursuiterCheck" Unchecked="HandlePursuiterUnchecked" />
 		<CheckBox x:Name="RoadSprinterFlt" Grid.Row="3"  Margin="10,180,0,0" Content="Road Sprinter" Checked="HandleRoadSprinterCheck" Unchecked="HandleRoadSprinterUnchecked" />
-
+		
 	</Grid>
 </Window>
