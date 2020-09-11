@@ -5,19 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XertExplorer"
         mc:Ignorable="d"
-        Title="XertExplorer" Height="700" Width="1200">
+        Title="" Height="700" Width="1200">
     <Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="40"/>
+			<RowDefinition Height="35"/>
 			<RowDefinition Height="80"/>
-			<RowDefinition Height="60"/>
+			<RowDefinition Height="40"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="150"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<Label Margin="5,0,0,10" Padding="200,10,0,0" Content="Workouts" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
+
+		
+		<Rectangle Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" Fill="Silver" />
+		<Label Margin="5,0,0,0" Padding="5,2,0,0" Content="Xert Explorer" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="30" FontFamily="Copperplate" Foreground="Teal"/>
+		<Label Margin="5,0,0,0" Padding="500,8,0,0" Content="Demo Mode" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Red"/>
+		<Label Margin="5,0,0,0" Padding="760,8,0,0" Content="User:" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Blue"/>
+		<Label Margin="5,0,0,0" Padding="800,8,0,0" Content="superathlete" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="DarkCyan"/>
+		<Label Margin="5,0,0,0" Padding="30,10,0,0" Content="Filters" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="20" FontFamily="Arial" Foreground="Black"/>
+		<Rectangle Grid.Row="2" Grid.Column="1"  Fill="Silver" />
+		<Label Margin="5,0,0,0" Padding="50,5,0,0" Content="Sort:" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" FontFamily="Copperplate" Foreground="RoyalBlue"/>
+		<Rectangle Grid.Row="3" Grid.Column="0" Fill="AliceBlue" />
+		<Label Margin="5,0,0,10" Padding="200,5,0,0" Content="Workouts" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
 		<ScrollViewer Grid.Column="1" Grid.Row="3" Background="DarkCyan">
 			<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 0">
 				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding XertWorkout}">
@@ -49,12 +60,20 @@
 
 							</Border>
 						</DataTemplate>
-
-
-
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 			</StackPanel>
 		</ScrollViewer>
+
+		<TextBlock Text="Focus" Margin="5,0,5,0" Padding="5, 10, 0, 0" FontFamily="Arial" FontSize="18" FontWeight="Bold" Grid.Row="3"/>
+		<CheckBox x:Name="EnduranceFlt" Grid.Row="3"  Margin="10,40,0,0" Content="Endurance" Checked="HandleEndurCheck" Unchecked="HandleEndurUnchecked" />
+		<CheckBox x:Name="ClimberFlt" Grid.Row="3"  Margin="10,60,0,0" Content="Climber" Checked="HandleClimberCheck" Unchecked="HandleClimberUnchecked" />
+		<CheckBox x:Name="GSFlt" Grid.Row="3"  Margin="10,80,0,0" Content="GC" Checked="HandleGCCheck" Unchecked="HandleGCUnchecked" />
+		<CheckBox x:Name="RoulerFlt" Grid.Row="3"  Margin="10,100,0,0" Content="Rouler" Checked="HandleRoulerCheck" Unchecked="HandleRoulerUnchecked" />
+		<CheckBox x:Name="BreakAwyFlt" Grid.Row="3"  Margin="10,120,0,0" Content="Breakaway" Checked="HandleBreakAwyCheck" Unchecked="HandleBreakAwyUnchecked" />
+		<CheckBox x:Name="PuncheurFlt" Grid.Row="3"  Margin="10,140,0,0" Content="Puncheur" Checked="HandlePuncheurCheck" Unchecked="HandlePuncheurUnchecked" />
+		<CheckBox x:Name="PursuiterFlt" Grid.Row="3"  Margin="10,160,0,0" Content="Pursuiter" Checked="HandlePursuiterCheck" Unchecked="HandlePursuiterUnchecked" />
+		<CheckBox x:Name="RoadSprinterFlt" Grid.Row="3"  Margin="10,180,0,0" Content="Road Sprinter" Checked="HandleRoadSprinterCheck" Unchecked="HandleRoadSprinterUnchecked" />
+
 	</Grid>
 </Window>

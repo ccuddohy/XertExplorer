@@ -24,15 +24,22 @@ namespace XertExplorer
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		List<XertWorkout> AllWorkouts;
+
 		public MainWindow()
 		{
+			
 			InitializeComponent();
 			try
 			{
-				List<XertWorkout> Wos = GetWorkouts("workouts.json");
-				if (Wos.Count > 0)
+				AllWorkouts = GetWorkouts("workouts.json");
+				if (AllWorkouts.Count > 0)
 				{
-					ListViewWorkouts.ItemsSource = Wos;
+					ListViewWorkouts.ItemsSource = AllWorkouts;
+				}
+				else
+				{
+					MessageBox.Show("NO WORKOUTS FOUND ", "No Workouts!", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
 			}
 			catch (Exception ex)
@@ -40,6 +47,76 @@ namespace XertExplorer
 				MessageBox.Show("An exception was caught: " + ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 		}
+
+		private void UnfilterList()
+		{
+	
+		}
+
+		private void HandleEndurCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleEndurUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleClimberCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleClimberUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleGCCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleGCUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleRoulerCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleRoulerUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleBreakAwyCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleBreakAwyUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandlePuncheurCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandlePuncheurUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandlePursuiterCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandlePursuiterUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleRoadSprinterCheck(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void HandleRoadSprinterUnchecked(object sender, RoutedEventArgs e)
+		{
+		}
+
 
 
 		/// <summary>
