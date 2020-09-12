@@ -1,6 +1,8 @@
 # XertExplorer
 This is a UI application that attempts to make it a bit easier to use some of Xerts features, In particular exploring workouts with filtering.   
 
+# NOTE The app is currently a learning and experimenting platform. Do not expect anything at this time.   
+
 ### Solution Details]
 This is a WPF application. It uses a dll I wrote ([XertClient](https://github.com/ccuddohy/XertClient)) that wraps the public Xert API. 
 
