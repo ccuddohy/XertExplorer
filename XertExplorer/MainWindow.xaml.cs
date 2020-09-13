@@ -16,7 +16,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using XertClient;
+using XertExplorer.ViewModels;
+//using XertClient;
 
 namespace XertExplorer
 {
@@ -25,8 +26,8 @@ namespace XertExplorer
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		List<XertWorkout> AllWorkouts;
-		ObservableCollection<XertWorkout> FilteredWorkouts;
+		//List<XertWorkout> AllWorkouts;
+		//ObservableCollection<XertWorkout> FilteredWorkouts;
 
 		public MainWindow()
 		{
@@ -34,16 +35,18 @@ namespace XertExplorer
 			InitializeComponent();
 			try
 			{
-				AllWorkouts = GetWorkouts("workouts.json");
-				if (AllWorkouts.Count > 0)
-				{
-					FilteredWorkouts = new ObservableCollection<XertWorkout>(AllWorkouts);
-					ListViewWorkouts.ItemsSource = FilteredWorkouts;
-				}
-				else
-				{
-					MessageBox.Show("NO WORKOUTS FOUND ", "No Workouts!", MessageBoxButton.OK, MessageBoxImage.Warning);
-				}
+				//AllWorkouts = GetWorkouts("workouts.json");
+				//if (AllWorkouts.Count > 0)
+				//{
+				//	//FilteredWorkouts = new ObservableCollection<XertWorkout>(AllWorkouts);
+				//	//ListViewWorkouts.ItemsSource = FilteredWorkouts;
+				//	ListViewWorkouts.ItemsSource = AllWorkouts;
+				//}
+				//else
+				//{
+				//	MessageBox.Show("NO WORKOUTS FOUND ", "No Workouts!", MessageBoxButton.OK, MessageBoxImage.Warning);
+				//}
+				DataContext = new WorkoutListViewModel("workouts.json");//viewmodel to view
 			}
 			catch (Exception ex)
 			{
@@ -51,20 +54,15 @@ namespace XertExplorer
 			}
 		}
 
-		private void UnfilterList()
-		{
-	
-		}
-
 		private void HandleEndurCheck(object sender, RoutedEventArgs e)
 		{
-			if(null == FilteredWorkouts)
-			{
-				return;
-			}
-			List<XertWorkout> filteredItems = FilteredWorkouts.Where(X => X.focus == "Endurance").ToList();
-			FilteredWorkouts = new ObservableCollection<XertWorkout>(filteredItems);
-			ListViewWorkouts.ItemsSource = FilteredWorkouts;
+			//if(null == FilteredWorkouts)
+			//{
+			//	return;
+			//}
+			//List<XertWorkout> filteredItems = FilteredWorkouts.Where(X => X.focus == "Endurance").ToList();
+			//FilteredWorkouts = new ObservableCollection<XertWorkout>(filteredItems);
+			//ListViewWorkouts.ItemsSource = FilteredWorkouts;
 		}
 
 		private void HandleEndurUnchecked(object sender, RoutedEventArgs e)
@@ -127,20 +125,7 @@ namespace XertExplorer
 		{
 		}
 
-
-
-		/// <summary>
-		/// for development, will load workouts from file. The file is copied to bin on build as set in the VS properties Build Action
-		/// </summary>
-		/// <param name="path"></param>
-		/// <returns></returns>
-		static List<XertWorkout> GetWorkouts(string path)
-		{
-			string JSONtxt = File.ReadAllText(path);
-			List<XertWorkout> wkouts = JsonSerializer.Deserialize<List<XertWorkout>>(JSONtxt);//JsonSerializer.DeserializeObject<List<XertWorkout>>(JSONtxt);
-			return wkouts;
-		}
-
+	
 
 	}
 }
