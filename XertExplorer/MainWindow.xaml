@@ -31,7 +31,7 @@
 		<Label Margin="5,0,0,10" Padding="200,5,0,0" Content="Workouts" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
 		<ScrollViewer Grid.Column="1" Grid.Row="3" Background="DarkCyan">
 			<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 0">
-				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding  WorkoutListView}">
+				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding  WorkoutListMdl.WorkoutsList, UpdateSourceTrigger=PropertyChanged}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<Border Margin="10" Width="980"  Height="250" Background="WhiteSmoke">

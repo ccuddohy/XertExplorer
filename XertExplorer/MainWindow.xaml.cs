@@ -35,20 +35,9 @@ namespace XertExplorer
 			InitializeComponent();
 			try
 			{
-				//AllWorkouts = GetWorkouts("workouts.json");
-				//if (AllWorkouts.Count > 0)
-				//{
-				//	//FilteredWorkouts = new ObservableCollection<XertWorkout>(AllWorkouts);
-				//	//ListViewWorkouts.ItemsSource = FilteredWorkouts;
-				//	ListViewWorkouts.ItemsSource = AllWorkouts;
-				//}
-				//else
-				//{
-				//	MessageBox.Show("NO WORKOUTS FOUND ", "No Workouts!", MessageBoxButton.OK, MessageBoxImage.Warning);
-				//}
-				DataContext = new WorkoutListViewModel("workouts.json");//viewmodel to view
+				DataContext = new WorkoutListViewModel();
 			}
-			catch (Exception ex)
+			catch (Exception ex) 
 			{
 				MessageBox.Show("An exception was caught: " + ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
@@ -56,13 +45,7 @@ namespace XertExplorer
 
 		private void HandleEndurCheck(object sender, RoutedEventArgs e)
 		{
-			//if(null == FilteredWorkouts)
-			//{
-			//	return;
-			//}
-			//List<XertWorkout> filteredItems = FilteredWorkouts.Where(X => X.focus == "Endurance").ToList();
-			//FilteredWorkouts = new ObservableCollection<XertWorkout>(filteredItems);
-			//ListViewWorkouts.ItemsSource = FilteredWorkouts;
+			
 		}
 
 		private void HandleEndurUnchecked(object sender, RoutedEventArgs e)

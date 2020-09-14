@@ -4,20 +4,14 @@ using XertClient;
 
 namespace XertExplorer.Models
 {
+	/// <summary>
+	/// The model has a list of XertWorkout. The application will not edit the elements of the list
+	/// it will only filter the list or sort the list so we do not need to be concerned with the 
+	/// details of the XertWorkout object.
+	/// </summary>
 	public class WorkoutListModel : INotifyPropertyChanged
 	{
-		public List<XertWorkout> _WorkoutsList { get; private set; }
-			//get
-			//{
-			//	return _WorkoutsList;
-			//}
-			//set 
-			//{
-				//_WorkoutsList = value;
-				//_WorkoutsList = new List<XertWorkout>(value);
-				//OnPropertyChanged("List");
-			//} 
-		//}
+		public List<XertWorkout> WorkoutsList { get; private set; }
 
 		/// <summary>
 		/// Creates a new WorkoutListModel
@@ -25,8 +19,7 @@ namespace XertExplorer.Models
 		/// <param name="workouts"></param>
 		public WorkoutListModel(List<XertWorkout> workouts)
 		{
-			//_WorkoutsList = workouts;
-			_WorkoutsList = new List<XertWorkout>(workouts);
+			WorkoutsList = new List<XertWorkout>(workouts);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
