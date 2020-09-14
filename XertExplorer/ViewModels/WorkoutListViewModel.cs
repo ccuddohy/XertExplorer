@@ -6,7 +6,6 @@ using System.Windows.Input;
 using XertClient;
 using XertExplorer.Models;
 using XertExplorer.Commands;
-using System.Reflection.Metadata.Ecma335;
 
 namespace XertExplorer.ViewModels
 {
@@ -50,7 +49,7 @@ namespace XertExplorer.ViewModels
 		public ICommand UpdateCommand { get; private set; }
 
 		/// <summary>
-		/// for experimenting. We do not want to save any changes to the list back to the source.
+		/// Saves changes to the WorkoutListModel instance
 		/// </summary>
 		public void SaveChanges()
 		{

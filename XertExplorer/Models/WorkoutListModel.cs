@@ -6,8 +6,8 @@ namespace XertExplorer.Models
 {
 	/// <summary>
 	/// The model has a list of XertWorkout. The application will not edit the elements of the list
-	/// it will only filter the list or sort the list so we do not need to be concerned with the 
-	/// details of the XertWorkout object.
+	/// other than filter the list or sort the list for viewing. We do not need to be concerned with the 
+	/// details of the XertWorkout object other than exposing them for displaying.
 	/// </summary>
 	public class WorkoutListModel : INotifyPropertyChanged
 	{

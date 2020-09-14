@@ -66,14 +66,14 @@
 		</ScrollViewer>
 
 		<Label Margin="5,0,5,0" Grid.Row="3" Grid.Column="0" Padding="5,10,0,0" Content="Focus" FontSize="16" FontFamily="Arial" />
-		<CheckBox x:Name="EnduranceFlt" Grid.Row="3"  Margin="10,40,0,0" Content="Endurance" Checked="HandleEndurCheck" Unchecked="HandleEndurUnchecked" />
-		<CheckBox x:Name="ClimberFlt" Grid.Row="3"  Margin="10,60,0,0" Content="Climber" Checked="HandleClimberCheck" Unchecked="HandleClimberUnchecked" />
-		<CheckBox x:Name="GSFlt" Grid.Row="3"  Margin="10,80,0,0" Content="GC" Checked="HandleGCCheck" Unchecked="HandleGCUnchecked" />
-		<CheckBox x:Name="RoulerFlt" Grid.Row="3"  Margin="10,100,0,0" Content="Rouler" Checked="HandleRoulerCheck" Unchecked="HandleRoulerUnchecked" />
-		<CheckBox x:Name="BreakAwyFlt" Grid.Row="3"  Margin="10,120,0,0" Content="Breakaway" Checked="HandleBreakAwyCheck" Unchecked="HandleBreakAwyUnchecked" />
-		<CheckBox x:Name="PuncheurFlt" Grid.Row="3"  Margin="10,140,0,0" Content="Puncheur" Checked="HandlePuncheurCheck" Unchecked="HandlePuncheurUnchecked" />
-		<CheckBox x:Name="PursuiterFlt" Grid.Row="3"  Margin="10,160,0,0" Content="Pursuiter" Checked="HandlePursuiterCheck" Unchecked="HandlePursuiterUnchecked" />
-		<CheckBox x:Name="RoadSprinterFlt" Grid.Row="3"  Margin="10,180,0,0" Content="Road Sprinter" Checked="HandleRoadSprinterCheck" Unchecked="HandleRoadSprinterUnchecked" />
+		<CheckBox x:Name="EnduranceFlt" Grid.Row="3"  Margin="10,40,0,0" Content="Endurance"  />
+		<CheckBox x:Name="ClimberFlt" Grid.Row="3"  Margin="10,60,0,0" Content="Climber" />
+		<CheckBox x:Name="GSFlt" Grid.Row="3"  Margin="10,80,0,0" Content="GC"  />
+		<CheckBox x:Name="RoulerFlt" Grid.Row="3"  Margin="10,100,0,0" Content="Rouler" />
+		<CheckBox x:Name="BreakAwyFlt" Grid.Row="3"  Margin="10,120,0,0" Content="Breakaway"  />
+		<CheckBox x:Name="PuncheurFlt" Grid.Row="3"  Margin="10,140,0,0" Content="Puncheur"  />
+		<CheckBox x:Name="PursuiterFlt" Grid.Row="3"  Margin="10,160,0,0" Content="Pursuiter"  />
+		<CheckBox x:Name="RoadSprinterFlt" Grid.Row="3"  Margin="10,180,0,0" Content="Road Sprinter"/>
 		
 	</Grid>
 </Window>
