@@ -27,9 +27,9 @@ namespace XertExplorer.Models
 		private void OnPropertyChanged(string propertyName)
 		{
 			PropertyChangedEventHandler handler = PropertyChanged;
-			if(null != handler )
+			if (null != handler)
 			{
-				handler(this, new PropertyChangedEventArgs(propertyName));
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}
