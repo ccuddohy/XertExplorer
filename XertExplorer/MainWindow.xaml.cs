@@ -21,7 +21,5 @@ namespace XertExplorer
 				MessageBox.Show("An exception was caught: " + ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 		}
-	
-
 	}
 }

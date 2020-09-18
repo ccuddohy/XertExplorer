@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XertExplorer"
+		xmlns:converter="clr-namespace:XertExplorer.Converters"
         mc:Ignorable="d"
         Title="" Height="700" Width="1200">
-    <Grid>
+	<Window.Resources>
+		<converter:TheConverter x:Key="cv"></converter:TheConverter>
+	</Window.Resources>
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="35"/>
 			<RowDefinition Height="80"/>
@@ -24,14 +28,12 @@
 		<Label Margin="5,0,0,0" Padding="500,8,0,0" Content="Demo Mode" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Red"/>
 		<Label Margin="5,0,0,0" Padding="760,8,0,0" Content="User:" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Blue"/>
 		<Label Margin="5,0,0,0" Padding="800,8,0,0" Content="superathlete" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="DarkCyan"/>
-		<Label Margin="5,0,0,0" Padding="30,10,0,0" Content="Filters" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="20" FontFamily="Arial" Foreground="Black"/>
 		<Rectangle Grid.Row="2" Grid.Column="1"  Fill="Silver" />
 		<Label Margin="5,0,0,0" Padding="50,5,0,0" Content="Sort:" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" FontFamily="Copperplate" Foreground="RoyalBlue"/>
-		<Rectangle Grid.Row="3" Grid.Column="0" Fill="#FFF0F8FF" />
 		<Label Margin="5,0,0,10" Padding="200,5,0,0" Content="Workouts" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
 		<ScrollViewer Grid.Column="1" Grid.Row="3" Background="DarkCyan">
 			<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 0">
-				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding  WorkoutListMdl.WorkoutsList, UpdateSourceTrigger=PropertyChanged}">
+				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding  WorkoutList, UpdateSourceTrigger=PropertyChanged}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<Border Margin="10" Width="980"  Height="250" Background="WhiteSmoke">
@@ -65,15 +67,84 @@
 			</StackPanel>
 		</ScrollViewer>
 
-		<Label Margin="5,0,5,0" Grid.Row="3" Grid.Column="0" Padding="5,10,0,0" Content="Focus" FontSize="16" FontFamily="Arial" />
-		<CheckBox x:Name="EnduranceFlt" Grid.Row="3"  Margin="10,40,0,0" Content="Endurance"  />
-		<CheckBox x:Name="ClimberFlt" Grid.Row="3"  Margin="10,60,0,0" Content="Climber" />
-		<CheckBox x:Name="GSFlt" Grid.Row="3"  Margin="10,80,0,0" Content="GC"  />
-		<CheckBox x:Name="RoulerFlt" Grid.Row="3"  Margin="10,100,0,0" Content="Rouler" />
-		<CheckBox x:Name="BreakAwyFlt" Grid.Row="3"  Margin="10,120,0,0" Content="Breakaway"  />
-		<CheckBox x:Name="PuncheurFlt" Grid.Row="3"  Margin="10,140,0,0" Content="Puncheur"  />
-		<CheckBox x:Name="PursuiterFlt" Grid.Row="3"  Margin="10,160,0,0" Content="Pursuiter"  />
-		<CheckBox x:Name="RoadSprinterFlt" Grid.Row="3"  Margin="10,180,0,0" Content="Road Sprinter"/>
-		
+		<Label Margin="5,0,0,0" Padding="30,10,0,0" Content="Filters" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="20" FontFamily="Arial" Foreground="Black"/>
+		<StackPanel Grid.Row="3" Grid.Column="0" Orientation="Vertical" Margin="5" Background="LightBlue">
+			<Label Margin="0,0,0,0" Content="Focus" FontSize="16" FontFamily="Arial" />
+			<StackPanel Orientation="Vertical" Margin="10, 0">
+				<CheckBox x:Name="EnduranceFltCkBox" Content="Endurance" Command="{Binding FilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="EnduranceFltCkBox" Path="Content"/>
+							<Binding ElementName="EnduranceFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+				
+				<CheckBox Name="ClimberFltCkBox" Content="Climber"  Command="{Binding FilterCommand}">
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="ClimberFltCkBox" Path="Content"/>
+							<Binding ElementName="ClimberFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox Name="GSFltCkBox" Content="GC Specialist"  Command="{Binding FilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="GSFltCkBox" Path="Content"/>
+							<Binding ElementName="GSFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox Name="RoulerFltCkBox" Content="Rouler"  Command="{Binding FilterCommand}">
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="RoulerFltCkBox" Path="Content"/>
+							<Binding ElementName="RoulerFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox Name="BreakAwyFltCkBox" Content="Breakaway"  Command="{Binding FilterCommand}">
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="BreakAwyFltCkBox" Path="Content"/>
+							<Binding ElementName="BreakAwyFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox Name="PuncheurFltCkBox" Content="Puncheur"  Command="{Binding FilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="PuncheurFltCkBox" Path="Content"/>
+							<Binding ElementName="PuncheurFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox Name="PursuiterFltCkBox" Content="Pursuiter"  Command="{Binding FilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="PursuiterFltCkBox" Path="Content"/>
+							<Binding ElementName="PursuiterFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox Name="RoadSprinterFltCkBox" Content="Road Sprinter"  Command="{Binding FilterCommand}">
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="RoadSprinterFltCkBox" Path="Content"/>
+							<Binding ElementName="RoadSprinterFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+				
+			</StackPanel>
+		</StackPanel>
+
 	</Grid>
 </Window>

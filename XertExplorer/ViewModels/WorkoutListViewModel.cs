@@ -1,66 +1,109 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Windows.Input;
 using XertClient;
-using XertExplorer.Models;
 using XertExplorer.Commands;
 
 namespace XertExplorer.ViewModels
 {
-	internal class WorkoutListViewModel
+	internal class WorkoutListViewModel:INotifyPropertyChanged
 	{
-		public WorkoutListViewModel()
+		public ICommand FilterCommand { get; set; }
+		
+		private List<XertWorkout> _allWorkOuts;
+
+		private ObservableCollection<string> _filters;
+		public ObservableCollection<string> Filters
 		{
-			//LoadWorkouts();
-			string JSONtxt = File.ReadAllText("workouts.json");
-			List<XertWorkout> wkouts = JsonSerializer.Deserialize<List<XertWorkout>>(JSONtxt);
-			_WorkoutListMdl = new WorkoutListModel(wkouts);
-			UpdateCommand = new UpdateWorkoutListModelCommand(this);
+			get { return _filters; ; }
+			set
+			{
+				_filters = value;
+				OnPropertyChange("Filters");
+			}
 		}
-				
-		/// <summary>
-		/// If the workoutList model is not null and is not empty then returns true.
-		/// </summary>
-		public bool CanUpdate
+
+		private List<XertWorkout> _workoutList;
+		public List<XertWorkout> WorkoutList
 		{
 			get { 
-				if(null == WorkoutListMdl)
-				{
-					return false;
-				}
-				if(0 == WorkoutListMdl.WorkoutsList.Count)
-				{
-					return false;
-				}
-				return true;
+				return _workoutList; ; 
+			}
+			set
+			{
+				_workoutList = value;
+				OnPropertyChange("WorkoutList");
 			}
 		}
 
-		public WorkoutListModel WorkoutListMdl {
-			get {
-				return _WorkoutListMdl;
-			}
-		}
-
-		WorkoutListModel _WorkoutListMdl;
-
-		/// <summary>
-		/// Gets the UpdateCommand for the _ViewModel
-		/// </summary>
-		public ICommand UpdateCommand { 
-			get; 
-			private set; 
-		}
-
-		/// <summary>
-		/// Saves changes to the WorkoutListModel instance
-		/// </summary>
-		public void SaveChanges()
+		public WorkoutListViewModel()
 		{
-			Debug.Assert(false, string.Format("was updated"));
+			LoadAllWorkouts();
+			WorkoutList = _allWorkOuts;
+			
+			FilterCommand = new RelayCommand(executeFilterMethod, canexecutFilterMmethod);
+			Filters = new ObservableCollection<string>();
 		}
+
+		private void LoadAllWorkouts()
+		{
+			string JSONtxt = File.ReadAllText("workouts.json");
+			_allWorkOuts = JsonSerializer.Deserialize<List<XertWorkout>>(JSONtxt);
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		private void OnPropertyChange(string propertyname)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
+			}
+		}
+
+		/// <summary>
+		/// todo
+		/// </summary>
+		/// <param name="parameter"></param>
+		/// <returns></returns>
+		private bool canexecutFilterMmethod(object parameter)
+		{
+			return true;
+		}
+
+		private void executeFilterMethod(object parameter)
+		{
+			var values = (object[])parameter;
+			string focusFilter = (string)values[0];
+			bool check = (bool)values[1];
+			if (check)
+			{
+				Filters.Add(focusFilter);
+			}
+			else
+			{
+				Filters.Remove(focusFilter);
+			}
+
+			if (Filters.Count > 0)
+			{
+				List<XertWorkout> filteredItems = new List<XertWorkout>();
+				foreach (string filer in Filters)
+				{
+					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
+				}
+				WorkoutList = filteredItems;
+			}
+			else
+			{
+				WorkoutList = _allWorkOuts;
+			}
+		}
+
 
 	}
 }
