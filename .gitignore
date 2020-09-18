@@ -1,10 +1,16 @@
 # most entries from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
 # Build results
 bld/
 [Bb]in/
 [Oo]bj/
-
 
 # .NET Core
 project.lock.json
