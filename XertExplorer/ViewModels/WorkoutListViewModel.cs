@@ -17,28 +17,12 @@ namespace XertExplorer.ViewModels
 		
 		private List<XertWorkout> _allWorkOuts;
 
-		private ObservableCollection<string> _filters;
-		public ObservableCollection<string> Filters
-		{
-			get { return _filters; ; }
-			set
-			{
-				_filters = value;
-				OnPropertyChange("Filters");
-			}
-		}
+		public ObservableCollection<string> Filters { get; set; }
 
-		private List<XertWorkout> _workoutList;
 		public List<XertWorkout> WorkoutList
 		{
-			get { 
-				return _workoutList; ; 
-			}
-			set
-			{
-				_workoutList = value;
-				OnPropertyChange("WorkoutList");
-			}
+			get; 
+			private set; 
 		}
 
 		public WorkoutListViewModel()
@@ -46,7 +30,7 @@ namespace XertExplorer.ViewModels
 			LoadAllWorkouts();
 			WorkoutList = _allWorkOuts;
 			
-			FilterCommand = new RelayCommand(executeFilterMethod, canexecutFilterMmethod);
+			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecutFilterMmethod);
 			Filters = new ObservableCollection<string>();
 		}
 
@@ -66,16 +50,16 @@ namespace XertExplorer.ViewModels
 		}
 
 		/// <summary>
-		/// todo
+		/// to-do
 		/// </summary>
 		/// <param name="parameter"></param>
 		/// <returns></returns>
-		private bool canexecutFilterMmethod(object parameter)
+		private bool CanexecutFilterMmethod(object parameter)
 		{
 			return true;
 		}
 
-		private void executeFilterMethod(object parameter)
+		private void ExecuteFilterMethod(object parameter)
 		{
 			var values = (object[])parameter;
 			string focusFilter = (string)values[0];
@@ -83,10 +67,12 @@ namespace XertExplorer.ViewModels
 			if (check)
 			{
 				Filters.Add(focusFilter);
+				OnPropertyChange("Filters");
 			}
 			else
 			{
 				Filters.Remove(focusFilter);
+				OnPropertyChange("Filters");
 			}
 
 			if (Filters.Count > 0)
@@ -97,10 +83,12 @@ namespace XertExplorer.ViewModels
 					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
 				}
 				WorkoutList = filteredItems;
+				OnPropertyChange("WorkoutList");
 			}
 			else
 			{
 				WorkoutList = _allWorkOuts;
+				OnPropertyChange("WorkoutList");
 			}
 		}
 
