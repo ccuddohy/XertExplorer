@@ -21,7 +21,6 @@
 			<ColumnDefinition Width="150"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-
 		
 		<Rectangle Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" Fill="Silver" />
 		<Label Margin="5,0,0,0" Padding="5,2,0,0" Content="Xert Explorer" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="30" FontFamily="Copperplate" Foreground="Teal"/>
@@ -31,41 +30,37 @@
 		<Rectangle Grid.Row="2" Grid.Column="1"  Fill="Silver" />
 		<Label Margin="5,0,0,0" Padding="50,5,0,0" Content="Sort:" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" FontFamily="Copperplate" Foreground="RoyalBlue"/>
 		<Label Margin="5,0,0,10" Padding="200,5,0,0" Content="Workouts" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
-		<ScrollViewer Grid.Column="1" Grid.Row="3" Background="DarkCyan">
-			<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 0">
-				<ItemsControl x:Name="ListViewWorkouts" ItemsSource="{Binding  WorkoutList, UpdateSourceTrigger=PropertyChanged}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Border Margin="10" Width="980"  Height="250" Background="WhiteSmoke">
-								<StackPanel Orientation="Horizontal">
-									<Border Width="350" Height="200" CornerRadius="5" Margin="10">
-										<Border.Effect>
-											<DropShadowEffect ShadowDepth="1"/>
-										</Border.Effect>
-										<Border.Background>
-											<ImageBrush ImageSource="{Binding thumb}"/>
-										</Border.Background>
-									</Border>
-									
-									<StackPanel Orientation="Vertical">
-										<StackPanel>
-											<TextBlock Padding="40,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
-										</StackPanel>
-										<StackPanel>
-											<TextBlock Padding="0,0,0,3" Text="{Binding focus, StringFormat='- Focus: {0}'}" FontSize="14" FontFamily="Arial"/>
-											<TextBlock Padding="0,0,0,3" Text="{Binding difficulty, StringFormat='- Difficulty: {0:#,#}'}" FontSize="14" FontFamily="Arial"/>
-											<TextBlock Padding="0,0,0,10" Text="{Binding duration, StringFormat='- Duration: {0}'}" FontSize="14" FontFamily="Arial"/>
-											<TextBlock Padding="0,0,0,0" MaxWidth="580" TextWrapping="Wrap" Text="{Binding description, StringFormat='- Description:{0}'}" FontSize="14" FontFamily="Arial"/>
-										</StackPanel>
-									</StackPanel>
-								</StackPanel>
-
+		
+		<ListBox ItemsSource="{Binding  WorkoutList, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Grid.Column="1" Grid.Row="3" >
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<VirtualizingStackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10" Background="DarkCyan" Width="980">
+						<StackPanel Orientation="Horizontal">
+							<Border Width="350" Height="200" CornerRadius="5" Margin="10">
+								<Border.Effect>
+									<DropShadowEffect ShadowDepth="1"/>
+								</Border.Effect>
+								<Border.Background>
+									<ImageBrush ImageSource="{Binding thumb}"/>
+								</Border.Background>
 							</Border>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</StackPanel>
-		</ScrollViewer>
+							<StackPanel Orientation="Vertical">
+								<StackPanel>
+									<TextBlock Padding="40,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
+								</StackPanel>
+								<StackPanel>
+									<TextBlock Padding="0,0,0,3" Text="{Binding focus, StringFormat='- Focus: {0}'}" FontSize="14" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,3" Text="{Binding difficulty, StringFormat='- Difficulty: {0:#,#}'}" FontSize="14" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,10" Text="{Binding duration, StringFormat='- Duration: {0}'}" FontSize="14" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,0" MaxWidth="580" TextWrapping="Wrap" Text="{Binding description, StringFormat='- Description:{0}'}" FontSize="14" FontFamily="Arial"/>
+								</StackPanel>
+							</StackPanel>
+						</StackPanel>
+					</VirtualizingStackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
 
 		<Label Margin="5,0,0,0" Padding="30,10,0,0" Content="Filters" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="20" FontFamily="Arial" Foreground="Black"/>
 		<StackPanel Grid.Row="3" Grid.Column="0" Orientation="Vertical" Margin="5" Background="LightBlue">
