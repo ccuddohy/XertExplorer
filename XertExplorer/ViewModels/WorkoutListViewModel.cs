@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -14,10 +15,14 @@ namespace XertExplorer.ViewModels
 	internal class WorkoutListViewModel:INotifyPropertyChanged
 	{
 		public ICommand FilterCommand { get; set; }
-		
+		public ICommand DemoModeCommand { get; set; }
+
+
 		private List<XertWorkout> _allWorkOuts;
 
 		public ObservableCollection<string> Filters { get; set; }
+
+		public bool DemoMode { get; set; }
 
 		public List<XertWorkout> WorkoutList
 		{
@@ -29,9 +34,11 @@ namespace XertExplorer.ViewModels
 		{
 			LoadAllWorkouts();
 			WorkoutList = _allWorkOuts;
-			
+			DemoMode = true;
 			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecutFilterMmethod);
 			Filters = new ObservableCollection<string>();
+
+			DemoModeCommand = new RelayCommand(ExecuteDemoModeMethod, CanexexecuteDemoModeMethod);
 		}
 
 		private void LoadAllWorkouts()
@@ -49,6 +56,37 @@ namespace XertExplorer.ViewModels
 			}
 		}
 
+		private void ExecuteDemoModeMethod(object parameter)
+		{
+			var values = (object[])parameter;
+			string focusFilter = (string)values[0];
+			bool check = (bool)values[1];
+			if (check)
+			{
+				DemoMode = true;
+				LoadAllWorkouts();
+				WorkoutList = _allWorkOuts;
+				ApplyFiltering();
+			}
+			else
+			{
+				DemoMode = false;
+				//if not demo mode and logged in, load the real workouts and apply the filtering
+
+				//if not demo mode and not logged in clear all workouts
+				_allWorkOuts = new List<XertWorkout>();
+				
+				WorkoutList = _allWorkOuts;
+				OnPropertyChange("WorkoutList");
+			}
+		}
+
+		private bool CanexexecuteDemoModeMethod(object parameter)
+		{
+			return true;
+		}
+
+
 		/// <summary>
 		/// to-do
 		/// </summary>
@@ -57,6 +95,25 @@ namespace XertExplorer.ViewModels
 		private bool CanexecutFilterMmethod(object parameter)
 		{
 			return true;
+		}
+
+		private void ApplyFiltering()
+		{
+			if (Filters.Count > 0)
+			{
+				List<XertWorkout> filteredItems = new List<XertWorkout>();
+				foreach (string filer in Filters)
+				{
+					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
+				}
+				WorkoutList = filteredItems;
+				OnPropertyChange("WorkoutList");
+			}
+			else
+			{
+				WorkoutList = _allWorkOuts;
+				OnPropertyChange("WorkoutList");
+			}
 		}
 
 		private void ExecuteFilterMethod(object parameter)
@@ -74,22 +131,8 @@ namespace XertExplorer.ViewModels
 				Filters.Remove(focusFilter);
 				OnPropertyChange("Filters");
 			}
+			ApplyFiltering();
 
-			if (Filters.Count > 0)
-			{
-				List<XertWorkout> filteredItems = new List<XertWorkout>();
-				foreach (string filer in Filters)
-				{
-					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
-				}
-				WorkoutList = filteredItems;
-				OnPropertyChange("WorkoutList");
-			}
-			else
-			{
-				WorkoutList = _allWorkOuts;
-				OnPropertyChange("WorkoutList");
-			}
 		}
 
 

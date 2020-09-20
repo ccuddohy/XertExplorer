@@ -12,7 +12,7 @@
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="35"/>
+			<RowDefinition Height="40"/>
 			<RowDefinition Height="80"/>
 			<RowDefinition Height="40"/>
 			<RowDefinition Height="*"/>
@@ -22,13 +22,40 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		
-		<Rectangle Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" Fill="Silver" />
-		<Label Margin="5,0,0,0" Padding="5,2,0,0" Content="Xert Explorer" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="30" FontFamily="Copperplate" Foreground="Teal"/>
-		<Label Margin="5,0,0,0" Padding="500,8,0,0" Content="Demo Mode" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Red"/>
-		<Label Margin="5,0,0,0" Padding="760,8,0,0" Content="User:" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Blue"/>
-		<Label Margin="5,0,0,0" Padding="800,8,0,0" Content="superathlete" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="DarkCyan"/>
+		<!--<Rectangle Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" Fill="Silver" />-->
+		<!--<Label Margin="5,0,0,0" Padding="5,2,0,0" Content="Xert Explorer" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="30" FontFamily="Copperplate" Foreground="Teal"/>-->
+		<!--<Label Margin="5,0,0,0" Padding="500,8,0,0" Content="Demo Mode" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Red"/>-->
+		<!--<Label Margin="5,0,0,0" Padding="760,8,0,0" Content="User:" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Blue"/>-->
+		<!--<Label Margin="5,0,0,0" Padding="800,8,0,0" Content="please log in" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="DarkCyan"/>-->
+		<StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Background="Silver" >
+			<Label Margin="10,0,0,0" Padding="0,5,20,0"  FontSize="30" FontFamily="Copperplate" Foreground="Teal" Content="Xert Explorer" />
+			
+			
+			<!--<CheckBox Height="30" Name="DemoMode" IsChecked="True" ToolTip="Loads a sample of workouts"  Margin="100,10,0,0" Padding="1,0,0,0" Foreground="Red" 
+					  FontFamily="Arial" FontSize="18" Command="{Binding DemoModeCommand}">Demo Mode</CheckBox>-->
+
+			<CheckBox x:Name="DemoModeCkBox" Height="30" IsChecked="{Binding DemoMode}"  ToolTip="Loads a sample of workouts" Margin="100,10,0,0" Padding="1,0,0,0" 
+					  Foreground="Red"  FontFamily="Arial" FontSize="16"  Content="Demo Mode" Command="{Binding DemoModeCommand}" >
+				<CheckBox.CommandParameter>
+					<MultiBinding Converter="{StaticResource cv}">
+						<Binding ElementName="DemoModeCkBox" Path="Content"/>
+						<Binding ElementName="DemoModeCkBox" Path="IsChecked"/>
+					</MultiBinding>
+				</CheckBox.CommandParameter>
+			</CheckBox>
+
+
+
+			<Label Content="User Name:" FontFamily="Arial" FontSize="14" Margin="50,10,0,0" />
+			<TextBox x:Name="UserName" FontFamily="Arial" FontSize="14"  Margin="0,0,0,0" Padding="2,5,0,0" Height="25" Width="160" >user name</TextBox>
+			<Label Content="Password:" FontFamily="Arial" FontSize="14" Margin="5,10,0,0" />
+			<PasswordBox x:Name="passwordBox" Height="25" Width="130" FontFamily="Arial" FontSize="14" Margin="0,0,0,0" Padding="2,5,0,0"/>
+			<Button x:Name="LoginBtn" Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="10,0">Login</Button>
+		</StackPanel>
+
+
 		<Rectangle Grid.Row="2" Grid.Column="1"  Fill="Silver" />
-		<Label Margin="5,0,0,0" Padding="50,5,0,0" Content="Sort:" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" FontFamily="Copperplate" Foreground="RoyalBlue"/>
+		                   
 		<Label Margin="5,0,0,10" Padding="200,5,0,0" Content="Workouts" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
 		
 		<ListBox ItemsSource="{Binding  WorkoutList, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Grid.Column="1" Grid.Row="3" >
@@ -46,12 +73,13 @@
 							</Border>
 							<StackPanel Orientation="Vertical">
 								<StackPanel>
-									<TextBlock Padding="40,20,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
+									<TextBlock Padding="40,10,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="18" FontFamily="Franklin Gothic Medium"/>
 								</StackPanel>
 								<StackPanel>
 									<TextBlock Padding="0,0,0,3" Text="{Binding focus, StringFormat='- Focus: {0}'}" FontSize="14" FontFamily="Arial"/>
 									<TextBlock Padding="0,0,0,3" Text="{Binding difficulty, StringFormat='- Difficulty: {0:#,#}'}" FontSize="14" FontFamily="Arial"/>
-									<TextBlock Padding="0,0,0,10" Text="{Binding duration, StringFormat='- Duration: {0}'}" FontSize="14" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,3" Text="{Binding duration, StringFormat='- Duration: {0}'}" FontSize="14" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,10" Text="{Binding recommended, StringFormat='- Recommended: {0}'}" FontSize="14" FontFamily="Arial"/>
 									<TextBlock Padding="0,0,0,0" MaxWidth="580" TextWrapping="Wrap" Text="{Binding description, StringFormat='- Description:{0}'}" FontSize="14" FontFamily="Arial"/>
 								</StackPanel>
 							</StackPanel>
@@ -137,7 +165,16 @@
 						</MultiBinding>
 					</CheckBox.CommandParameter>
 				</CheckBox>
-				
+
+				<CheckBox Name="RecommendedFltCkBox" Content="Recommended"  Command="{Binding FilterCommand}">
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="RecommendedFltCkBox" Path="Content"/>
+							<Binding ElementName="RecommendedFltCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
 			</StackPanel>
 		</StackPanel>
 
