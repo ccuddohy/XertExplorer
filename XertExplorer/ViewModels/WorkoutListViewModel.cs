@@ -105,11 +105,13 @@ namespace XertExplorer.ViewModels
 					OnPropertyChanged("LoggedOff");
 					LoginError = false;
 					OnPropertyChanged("LoginError");
+
 				}
 				catch(Exception)
 				{
 					LoginError = true;
 					OnPropertyChanged("LoginError");
+					
 				}
 			}
 		}
