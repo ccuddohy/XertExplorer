@@ -34,7 +34,7 @@
 			<!--<CheckBox Height="30" Name="DemoMode" IsChecked="True" ToolTip="Loads a sample of workouts"  Margin="100,10,0,0" Padding="1,0,0,0" Foreground="Red" 
 					  FontFamily="Arial" FontSize="18" Command="{Binding DemoModeCommand}">Demo Mode</CheckBox>-->
 
-			<CheckBox x:Name="DemoModeCkBox" Height="30" IsChecked="{Binding DemoMode}"  ToolTip="Loads a sample of workouts" Margin="100,10,0,0" Padding="1,0,0,0" 
+			<CheckBox x:Name="DemoModeCkBox" Height="30" IsChecked="{Binding DemoMode}"  ToolTip="Loads a sample of workouts" Margin="650,10,0,0" Padding="1,0,0,0" 
 					  Foreground="Red"  FontFamily="Arial" FontSize="16"  Content="Demo Mode" Command="{Binding DemoModeCommand}" >
 				<CheckBox.CommandParameter>
 					<MultiBinding Converter="{StaticResource cv}">
@@ -46,11 +46,12 @@
 
 
 
-			<Label Content="User Name:" FontFamily="Arial" FontSize="14" Margin="50,10,0,0" />
-			<TextBox x:Name="UserName" FontFamily="Arial" FontSize="14"  Margin="0,0,0,0" Padding="2,5,0,0" Height="25" Width="160" >user name</TextBox>
-			<Label Content="Password:" FontFamily="Arial" FontSize="14" Margin="5,10,0,0" />
-			<PasswordBox x:Name="passwordBox" Height="25" Width="130" FontFamily="Arial" FontSize="14" Margin="0,0,0,0" Padding="2,5,0,0"/>
-			<Button x:Name="LoginBtn" Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="10,0">Login</Button>
+			<!--<Label Content="User Name:" FontFamily="Arial" FontSize="14" Margin="50,10,0,0" />
+			<TextBox x:Name="UserName" FontFamily="Arial" FontSize="14"  Margin="0,0,0,0" Padding="2,5,0,0" Height="25" Width="160" 
+					 Text="{Binding UserName}" />-->
+			<!--<Label Content="Password:" FontFamily="Arial" FontSize="14" Margin="5,10,0,0" />-->
+			<!--<PasswordBox x:Name="passwordBox" Height="25" Width="130" FontFamily="Arial" FontSize="14" Margin="0,0,0,0" Padding="2,5,0,0"/>-->
+			<Button x:Name="LoginBtn" Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="25,0" Content="Login"></Button>
 		</StackPanel>
 
 

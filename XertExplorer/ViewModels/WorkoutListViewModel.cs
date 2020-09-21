@@ -14,11 +14,14 @@ namespace XertExplorer.ViewModels
 {
 	internal class WorkoutListViewModel:INotifyPropertyChanged
 	{
+		IXertClient _client; 
 		public ICommand FilterCommand { get; set; }
 		public ICommand DemoModeCommand { get; set; }
 
-
 		private List<XertWorkout> _allWorkOuts;
+
+		public string UserName { get; set; }
+		public string Password { get; set; }
 
 		public ObservableCollection<string> Filters { get; set; }
 
@@ -32,6 +35,7 @@ namespace XertExplorer.ViewModels
 
 		public WorkoutListViewModel()
 		{
+			DemoMode = true;
 			LoadAllWorkouts();
 			WorkoutList = _allWorkOuts;
 			DemoMode = true;
@@ -40,10 +44,23 @@ namespace XertExplorer.ViewModels
 
 			DemoModeCommand = new RelayCommand(ExecuteDemoModeMethod, CanexexecuteDemoModeMethod);
 		}
+		
+		public void LogInLogOff()
+		{
+			if (null == _client)
+			{
+				IXertClient _client = new Client();
+			}
+		}
 
 		private void LoadAllWorkouts()
 		{
-			string JSONtxt = File.ReadAllText("workouts.json");
+			string JSONtxt = "";
+			if (DemoMode)
+			{
+				JSONtxt = File.ReadAllText("workouts.json");
+			}
+			
 			_allWorkOuts = JsonSerializer.Deserialize<List<XertWorkout>>(JSONtxt);
 		}
 
