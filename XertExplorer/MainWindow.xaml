@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XertExplorer"
 		xmlns:converter="clr-namespace:XertExplorer.Converters"
+	xmlns:components="clr-namespace:PasswordBoxMVVM.Components;assembly=PasswordBoxMVVM"
         mc:Ignorable="d"
         Title="" Height="700" Width="1200">
 	<Window.Resources>
 		<converter:TheConverter x:Key="cv"></converter:TheConverter>
+		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
@@ -22,19 +24,10 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		
-		<!--<Rectangle Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" Fill="Silver" />-->
-		<!--<Label Margin="5,0,0,0" Padding="5,2,0,0" Content="Xert Explorer" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="30" FontFamily="Copperplate" Foreground="Teal"/>-->
-		<!--<Label Margin="5,0,0,0" Padding="500,8,0,0" Content="Demo Mode" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Red"/>-->
-		<!--<Label Margin="5,0,0,0" Padding="760,8,0,0" Content="User:" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="Blue"/>-->
-		<!--<Label Margin="5,0,0,0" Padding="800,8,0,0" Content="please log in" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="14" FontFamily="Arial" Foreground="DarkCyan"/>-->
 		<StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Background="Silver" >
 			<Label Margin="10,0,0,0" Padding="0,5,20,0"  FontSize="30" FontFamily="Copperplate" Foreground="Teal" Content="Xert Explorer" />
-			
-			
-			<!--<CheckBox Height="30" Name="DemoMode" IsChecked="True" ToolTip="Loads a sample of workouts"  Margin="100,10,0,0" Padding="1,0,0,0" Foreground="Red" 
-					  FontFamily="Arial" FontSize="18" Command="{Binding DemoModeCommand}">Demo Mode</CheckBox>-->
-
-			<CheckBox x:Name="DemoModeCkBox" Height="30" IsChecked="{Binding DemoMode}"  ToolTip="Loads a sample of workouts" Margin="650,10,0,0" Padding="1,0,0,0" 
+	
+			<!--<CheckBox x:Name="DemoModeCkBox" Height="30" IsChecked="{Binding DemoMode}"  ToolTip="Loads a sample of workouts" Margin="50,10,0,0" Padding="2,0,0,0" 
 					  Foreground="Red"  FontFamily="Arial" FontSize="16"  Content="Demo Mode" Command="{Binding DemoModeCommand}" >
 				<CheckBox.CommandParameter>
 					<MultiBinding Converter="{StaticResource cv}">
@@ -42,16 +35,25 @@
 						<Binding ElementName="DemoModeCkBox" Path="IsChecked"/>
 					</MultiBinding>
 				</CheckBox.CommandParameter>
-			</CheckBox>
+			</CheckBox>-->
+			<TextBlock Text="Demo Mode"  FontFamily="Arial" FontSize="16" Margin="50,5,0,5" Padding="2,5,0,0" Foreground="Red"   Visibility="{Binding LoggedOff,
+				UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
+
+			<TextBlock Text="Username"  FontFamily="Arial" FontSize="14" Margin="50,10,0,0"/>
+			<TextBox FontFamily="Arial" FontSize="14"  Margin="5,0,0,0" Padding="2,5,0,0" Height="25" Width="160" 
+					 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding LoggedOff}"/>
+
+			<TextBlock  FontFamily="Arial" FontSize="14" Margin="20,10,0,0" Text="Password"  Visibility="{Binding LoggedOff,
+				UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
+			<components:BindablePasswordBox Height="25" Width="160" FontFamily="Arial" FontSize="14" Margin="0,0,0,0" Padding="2,0,0,0"
+					Password="{Binding Password}" Visibility="{Binding LoggedOff, UpdateSourceTrigger=PropertyChanged, 
+				Converter={StaticResource BoolToVis}, FallbackValue=Visible}"  />
+			<Button Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="25,0,0,0"  Command="{Binding LoginCommand}" Content="Login" 
+					Visibility="{Binding LoggedOff, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
 
 
-
-			<!--<Label Content="User Name:" FontFamily="Arial" FontSize="14" Margin="50,10,0,0" />
-			<TextBox x:Name="UserName" FontFamily="Arial" FontSize="14"  Margin="0,0,0,0" Padding="2,5,0,0" Height="25" Width="160" 
-					 Text="{Binding UserName}" />-->
-			<!--<Label Content="Password:" FontFamily="Arial" FontSize="14" Margin="5,10,0,0" />-->
-			<!--<PasswordBox x:Name="passwordBox" Height="25" Width="130" FontFamily="Arial" FontSize="14" Margin="0,0,0,0" Padding="2,5,0,0"/>-->
-			<Button x:Name="LoginBtn" Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="25,0" Content="Login"></Button>
+			<TextBlock Height="25" Width="100" FontFamily="Arial" FontSize="14" Padding="5,5,5,5" Margin="5,0,0,0" Foreground="Red" Background="Yellow" 
+					   Text="LogIn ERROR"  Visibility="{Binding LoginError, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}"/>
 		</StackPanel>
 
 

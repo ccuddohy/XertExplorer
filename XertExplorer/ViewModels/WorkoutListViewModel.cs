@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -6,23 +7,55 @@ using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using XertClient;
 using XertExplorer.Commands;
 
 namespace XertExplorer.ViewModels
 {
-	internal class WorkoutListViewModel:INotifyPropertyChanged
+	public class WorkoutListViewModel : INotifyPropertyChanged
 	{
 		IXertClient _client; 
 		public ICommand FilterCommand { get; set; }
 		public ICommand DemoModeCommand { get; set; }
 
+		public bool LoggedOff {get; set;}
+		public bool LoginError { get; set; }
+
 		private List<XertWorkout> _allWorkOuts;
 
-		public string UserName { get; set; }
-		public string Password { get; set; }
+		private string _username;
+		public string Username
+		{
+			get
+			{
+				return _username;
+			}
+			set
+			{
+				_username = value;
+				OnPropertyChanged(nameof(Username));
+			}
+		}
 
+		private string _password;
+		public string Password
+		{
+			get
+			{
+				return _password;
+			}
+			set
+			{
+				_password = value;
+				OnPropertyChanged(nameof(Password));
+			}
+		}
+
+		public ICommand LoginCommand { get; }
+	
 		public ObservableCollection<string> Filters { get; set; }
 
 		public bool DemoMode { get; set; }
@@ -43,13 +76,41 @@ namespace XertExplorer.ViewModels
 			Filters = new ObservableCollection<string>();
 
 			DemoModeCommand = new RelayCommand(ExecuteDemoModeMethod, CanexexecuteDemoModeMethod);
+
+			LoginCommand = new RelayCommand(ExecuteLogin, CanExecuteLogin);
+			LoggedOff = true;
 		}
-		
-		public void LogInLogOff()
+
+
+		public bool CanExecuteLogin(object parameter)
+		{
+			return !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
+		}
+
+		public void ExecuteLogin(object parameter)
+		{
+			LogIn();
+		}
+
+		public async Task LogIn()
 		{
 			if (null == _client)
 			{
-				IXertClient _client = new Client();
+				try
+				{
+					IXertClient _client = new Client();
+					await _client.Login(Username, Password);
+
+					LoggedOff = false;
+					OnPropertyChanged("LoggedOff");
+					LoginError = false;
+					OnPropertyChanged("LoginError");
+				}
+				catch(Exception)
+				{
+					LoginError = true;
+					OnPropertyChanged("LoginError");
+				}
 			}
 		}
 
@@ -65,7 +126,7 @@ namespace XertExplorer.ViewModels
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChange(string propertyname)
+		private void OnPropertyChanged(string propertyname)
 		{
 			if (PropertyChanged != null)
 			{
@@ -94,7 +155,7 @@ namespace XertExplorer.ViewModels
 				_allWorkOuts = new List<XertWorkout>();
 				
 				WorkoutList = _allWorkOuts;
-				OnPropertyChange("WorkoutList");
+				OnPropertyChanged("WorkoutList");
 			}
 		}
 
@@ -124,12 +185,12 @@ namespace XertExplorer.ViewModels
 					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
 				}
 				WorkoutList = filteredItems;
-				OnPropertyChange("WorkoutList");
+				OnPropertyChanged("WorkoutList");
 			}
 			else
 			{
 				WorkoutList = _allWorkOuts;
-				OnPropertyChange("WorkoutList");
+				OnPropertyChanged("WorkoutList");
 			}
 		}
 
@@ -141,12 +202,12 @@ namespace XertExplorer.ViewModels
 			if (check)
 			{
 				Filters.Add(focusFilter);
-				OnPropertyChange("Filters");
+				OnPropertyChanged("Filters");
 			}
 			else
 			{
 				Filters.Remove(focusFilter);
-				OnPropertyChange("Filters");
+				OnPropertyChanged("Filters");
 			}
 			ApplyFiltering();
 
