@@ -43,22 +43,26 @@
 			<TextBox FontFamily="Arial" FontSize="14"  Margin="5,0,0,0" Padding="2,5,0,0" Height="25" Width="160" 
 					 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding LoggedOff}"/>
 
-			<TextBlock  FontFamily="Arial" FontSize="14" Margin="20,10,0,0" Text="Password"  Visibility="{Binding LoggedOff,
+			<TextBlock  FontFamily="Arial" FontSize="14" Margin="5,10,0,0" Text="Password"  Visibility="{Binding LoggedOff,
 				UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
-			<components:BindablePasswordBox Height="25" Width="160" FontFamily="Arial" FontSize="14" Margin="0,0,0,0" Padding="2,0,0,0"
+			<components:BindablePasswordBox Height="25" Width="160" FontFamily="Arial" FontSize="14" Margin="5,0,0,0" Padding="2,0,0,0"
 					Password="{Binding Password}" Visibility="{Binding LoggedOff, UpdateSourceTrigger=PropertyChanged, 
 				Converter={StaticResource BoolToVis}, FallbackValue=Visible}"  />
-			<Button Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="25,0,0,0"  Command="{Binding LoginCommand}" Content="Login" 
+			<Button Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="10,0,0,0"  Command="{Binding LoginCommand}" Content="Login" 
 					Visibility="{Binding LoggedOff, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
 
-
-			<TextBlock Height="25" Width="100" FontFamily="Arial" FontSize="14" Padding="5,5,5,5" Margin="5,0,0,0" Foreground="Red" Background="Yellow" 
-					   Text="LogIn ERROR"  Visibility="{Binding LoginError, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}"/>
+			<Border BorderThickness="1" BorderBrush="Black" Height="30" Margin="3"  Visibility="{Binding HasStatusMessage, UpdateSourceTrigger=PropertyChanged, 
+				Converter={StaticResource BoolToVis}}">
+					<TextBlock Height="25" Width="220" FontFamily="Arial" FontSize="14" Padding="5,5,5,5" Margin="5,0,0,0" 
+					   Text="{Binding StatusMessage}"  Visibility="{Binding HasStatusMessage, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}}"/>
+			</Border>
 		</StackPanel>
 
 
-		<Rectangle Grid.Row="2" Grid.Column="1"  Fill="Silver" />
-		                   
+		<StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Background="Silver" >
+			<TextBlock Text="{Binding WorkoutCount, StringFormat='Workouts Available: {0}'}"  FontFamily="Arial" FontSize="14" Margin="50,10,0,0"/>
+		</StackPanel>
+
 		<Label Margin="5,0,0,10" Padding="200,5,0,0" Content="Workouts" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="60" FontFamily="Arial"/>
 		
 		<ListBox ItemsSource="{Binding  WorkoutList, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Grid.Column="1" Grid.Row="3" >

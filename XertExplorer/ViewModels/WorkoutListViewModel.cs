@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AsyncCommands.Commands;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,14 +18,24 @@ namespace XertExplorer.ViewModels
 {
 	public class WorkoutListViewModel : INotifyPropertyChanged
 	{
-		IXertClient _client; 
+		IXertClient _client;
 		public ICommand FilterCommand { get; set; }
-		public ICommand DemoModeCommand { get; set; }
 
-		public bool LoggedOff {get; set;}
+		public bool LoggedOn
+		{
+			get
+			{
+				return !LoggedOff;
+			}
+			private set { }
+		}
+
+		public bool LoggedOff { get; set; }
+		
+
 		public bool LoginError { get; set; }
 
-		private List<XertWorkout> _allWorkOuts;
+		private List<IXertWorkout> _allWorkOuts;
 
 		private string _username;
 		public string Username
@@ -39,6 +50,23 @@ namespace XertExplorer.ViewModels
 				OnPropertyChanged(nameof(Username));
 			}
 		}
+
+		private string _statusMessage;
+		public string StatusMessage
+		{
+			get
+			{
+				return _statusMessage;
+			}
+			set
+			{
+				_statusMessage = value;
+				OnPropertyChanged(nameof(StatusMessage));
+				OnPropertyChanged(nameof(HasStatusMessage));
+			}
+		}
+
+		public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
 		private string _password;
 		public string Password
@@ -58,27 +86,43 @@ namespace XertExplorer.ViewModels
 	
 		public ObservableCollection<string> Filters { get; set; }
 
-		public bool DemoMode { get; set; }
-
-		public List<XertWorkout> WorkoutList
+		public int WorkoutCount
 		{
-			get; 
-			private set; 
+			get
+			{
+				if (null == WorkoutList)
+				{
+					return 0;
+				}
+				return WorkoutList.Count();
+			}
+			private set	{}
+		}
+
+
+		public List<IXertWorkout> WorkoutList
+		{
+			get
+			{
+				return WorkoutList;
+			}
+			private set
+			{
+				WorkoutList = value;
+				OnPropertyChanged("WorkoutList");
+				OnPropertyChanged("WorkoutCount");
+			}
 		}
 
 		public WorkoutListViewModel()
 		{
-			DemoMode = true;
-			LoadAllWorkouts();
-			WorkoutList = _allWorkOuts;
-			DemoMode = true;
+			LoggedOff = true;
+			//LoadDemoWorkouts();
+			//WorkoutList = _allWorkOuts;
+
 			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecutFilterMmethod);
 			Filters = new ObservableCollection<string>();
-
-			DemoModeCommand = new RelayCommand(ExecuteDemoModeMethod, CanexexecuteDemoModeMethod);
-
-			LoginCommand = new RelayCommand(ExecuteLogin, CanExecuteLogin);
-			LoggedOff = true;
+			LoginCommand = new AsyncRelayCommand(Login, (ex) => StatusMessage = ex.Message);
 		}
 
 
@@ -86,45 +130,55 @@ namespace XertExplorer.ViewModels
 		{
 			return !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
 		}
-
-		public void ExecuteLogin(object parameter)
+	
+		private async Task Login()
 		{
-			LogIn();
+			StatusMessage = "Logging in...";
+
+			_client = new Client();
+			await _client.Login(Username, Password);
+			LoggedOff = false;
+			OnPropertyChanged("LoggedOff");
+			StatusMessage = "Logged in";
+
+			await LoadAllWorkouts();
 		}
 
-		public async Task LogIn()
+		private void LoadDemoWorkouts()
 		{
-			if (null == _client)
+			try
 			{
-				try
-				{
-					IXertClient _client = new Client();
-					await _client.Login(Username, Password);
+				//string JSONtxt = File.ReadAllText("workouts.json");
+				//_allWorkOuts = JsonSerializer.Deserialize<List<IXertWorkout>>(JSONtxt);
 
-					LoggedOff = false;
-					OnPropertyChanged("LoggedOff");
-					LoginError = false;
-					OnPropertyChanged("LoginError");
 
-				}
-				catch(Exception)
-				{
-					LoginError = true;
-					OnPropertyChanged("LoginError");
-					
-				}
+				//byte[] jsonUtf8Bytes = File.ReadAllBytes("workouts.json");
+				//var options = new JsonReaderOptions
+				//{
+				//	AllowTrailingCommas = true,
+				//	CommentHandling = JsonCommentHandling.Skip
+				//};
+				//var utf8Reader = new Utf8JsonReader(jsonUtf8Bytes);
+				//_allWorkOuts = (List<IXertWorkout>)JsonSerializer.Deserialize<IXertWorkout>(ref utf8Reader);
 			}
-		}
-
-		private void LoadAllWorkouts()
-		{
-			string JSONtxt = "";
-			if (DemoMode)
+			catch (Exception ex)
 			{
-				JSONtxt = File.ReadAllText("workouts.json");
+				int e = 1;
 			}
 			
-			_allWorkOuts = JsonSerializer.Deserialize<List<XertWorkout>>(JSONtxt);
+		}
+
+		private async Task LoadAllWorkouts()
+		{
+			if (LoggedOff)
+			{
+				return;
+			}
+			StatusMessage = "Loading Workouts...";
+			_allWorkOuts = await _client.GetUsersWorkouts();
+			WorkoutList = _allWorkOuts;
+			//OnPropertyChanged("WorkoutList");
+			StatusMessage = string.Format("{0} Workouts Loaded", _allWorkOuts.Count());
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -135,37 +189,6 @@ namespace XertExplorer.ViewModels
 				PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
 			}
 		}
-
-		private void ExecuteDemoModeMethod(object parameter)
-		{
-			var values = (object[])parameter;
-			string focusFilter = (string)values[0];
-			bool check = (bool)values[1];
-			if (check)
-			{
-				DemoMode = true;
-				LoadAllWorkouts();
-				WorkoutList = _allWorkOuts;
-				ApplyFiltering();
-			}
-			else
-			{
-				DemoMode = false;
-				//if not demo mode and logged in, load the real workouts and apply the filtering
-
-				//if not demo mode and not logged in clear all workouts
-				_allWorkOuts = new List<XertWorkout>();
-				
-				WorkoutList = _allWorkOuts;
-				OnPropertyChanged("WorkoutList");
-			}
-		}
-
-		private bool CanexexecuteDemoModeMethod(object parameter)
-		{
-			return true;
-		}
-
 
 		/// <summary>
 		/// to-do
@@ -181,18 +204,18 @@ namespace XertExplorer.ViewModels
 		{
 			if (Filters.Count > 0)
 			{
-				List<XertWorkout> filteredItems = new List<XertWorkout>();
+				List<IXertWorkout> filteredItems = new List<IXertWorkout>();
 				foreach (string filer in Filters)
 				{
 					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
 				}
 				WorkoutList = filteredItems;
-				OnPropertyChanged("WorkoutList");
+				//OnPropertyChanged("WorkoutList");
 			}
 			else
 			{
 				WorkoutList = _allWorkOuts;
-				OnPropertyChanged("WorkoutList");
+				//OnPropertyChanged("WorkoutList");
 			}
 		}
 
