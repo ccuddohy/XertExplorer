@@ -21,21 +21,51 @@ namespace XertExplorer.ViewModels
 		IXertClient _client;
 		public ICommand FilterCommand { get; set; }
 
-		public bool LoggedOn
+		private bool _loggedOff;
+		
+		/// <summary>
+		/// The state of the users login status
+		/// </summary>
+		public bool LoggedOff
 		{
 			get
 			{
-				return !LoggedOff;
+				return _loggedOff;
 			}
-			private set { }
+			set
+			{
+				_loggedOff = value;
+				LoggedOn = !value;
+				OnPropertyChanged(nameof(LoggedOff));
+				OnPropertyChanged(nameof(LoggedOn));
+			}
 		}
 
-		public bool LoggedOff { get; set; }
-		
+		/// <summary>
+		/// The inverse of LoggedOff
+		/// </summary>
+		public bool LoggedOn { get; set; }
 
-		public bool LoginError { get; set; }
-
+		/// <summary>
+		/// This is a List of all the workouts for the user. It is unfiltered and not sorted.
+		/// </summary>
 		private List<IXertWorkout> _allWorkOuts;
+
+		/// <summary>
+		/// simply returns a count of all the unfiltered workouts for the user.
+		/// </summary>
+		public int CountOfAllUserWorkouts
+		{
+			get
+			{
+				if (null == _allWorkOuts)
+				{
+					return 0;
+				}
+				return _allWorkOuts.Count();
+			}
+			private set	{}
+		}
 
 		private string _username;
 		public string Username
@@ -52,6 +82,10 @@ namespace XertExplorer.ViewModels
 		}
 
 		private string _statusMessage;
+		
+		/// <summary>
+		/// An indication of login operations and workout loading status
+		/// </summary>
 		public string StatusMessage
 		{
 			get
@@ -84,44 +118,50 @@ namespace XertExplorer.ViewModels
 
 		public ICommand LoginCommand { get; }
 	
-		public ObservableCollection<string> Filters { get; set; }
+		public List<string> Filters { get; set; }
 
-		public int WorkoutCount
+		public int FilteredWorkoutCount
 		{
 			get
 			{
-				if (null == WorkoutList)
+				if (null == WorkoutListFiltered)
 				{
 					return 0;
 				}
-				return WorkoutList.Count();
+				return WorkoutListFiltered.Count();
 			}
 			private set	{}
 		}
 
-
-		public List<IXertWorkout> WorkoutList
+		private List<IXertWorkout> _workoutListFiltered;
+		
+		/// <summary>
+		/// This is a subset of _allWorkouts. It may be filtered and it may be sorted.
+		/// </summary>
+		public List<IXertWorkout> WorkoutListFiltered
 		{
 			get
 			{
-				return WorkoutList;
+				return _workoutListFiltered;
 			}
 			private set
 			{
-				WorkoutList = value;
-				OnPropertyChanged("WorkoutList");
-				OnPropertyChanged("WorkoutCount");
+				_workoutListFiltered = value;
+				OnPropertyChanged(nameof(WorkoutListFiltered));
+				OnPropertyChanged(nameof(FilteredWorkoutCount));
 			}
 		}
 
 		public WorkoutListViewModel()
 		{
+			//_allWorkOuts = new List<IXertWorkout>();
+			//WorkoutListFiltered = new List<IXertWorkout>();
 			LoggedOff = true;
 			//LoadDemoWorkouts();
-			//WorkoutList = _allWorkOuts;
+			//WorkoutListFiltered = _allWorkOuts;
 
-			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecutFilterMmethod);
-			Filters = new ObservableCollection<string>();
+			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecutFilterMethod);
+			Filters = new List<string>();
 			LoginCommand = new AsyncRelayCommand(Login, (ex) => StatusMessage = ex.Message);
 		}
 
@@ -137,10 +177,8 @@ namespace XertExplorer.ViewModels
 
 			_client = new Client();
 			await _client.Login(Username, Password);
-			LoggedOff = false;
-			OnPropertyChanged("LoggedOff");
 			StatusMessage = "Logged in";
-
+			LoggedOff = false; 
 			await LoadAllWorkouts();
 		}
 
@@ -176,8 +214,7 @@ namespace XertExplorer.ViewModels
 			}
 			StatusMessage = "Loading Workouts...";
 			_allWorkOuts = await _client.GetUsersWorkouts();
-			WorkoutList = _allWorkOuts;
-			//OnPropertyChanged("WorkoutList");
+			WorkoutListFiltered = _allWorkOuts;
 			StatusMessage = string.Format("{0} Workouts Loaded", _allWorkOuts.Count());
 		}
 
@@ -191,12 +228,20 @@ namespace XertExplorer.ViewModels
 		}
 
 		/// <summary>
-		/// to-do
+		/// need to have workouts before they can be filtered
 		/// </summary>
 		/// <param name="parameter"></param>
 		/// <returns></returns>
-		private bool CanexecutFilterMmethod(object parameter)
+		private bool CanexecutFilterMethod(object parameter)
 		{
+			if(null == _allWorkOuts )
+			{
+				return false;
+			}
+			if(_allWorkOuts.Count == 0)
+			{
+				return false;
+			}
 			return true;
 		}
 
@@ -209,13 +254,11 @@ namespace XertExplorer.ViewModels
 				{
 					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
 				}
-				WorkoutList = filteredItems;
-				//OnPropertyChanged("WorkoutList");
+				WorkoutListFiltered = filteredItems;
 			}
 			else
 			{
-				WorkoutList = _allWorkOuts;
-				//OnPropertyChanged("WorkoutList");
+				WorkoutListFiltered = _allWorkOuts;
 			}
 		}
 
@@ -227,12 +270,12 @@ namespace XertExplorer.ViewModels
 			if (check)
 			{
 				Filters.Add(focusFilter);
-				OnPropertyChanged("Filters");
+				OnPropertyChanged(nameof(Filters));
 			}
 			else
 			{
 				Filters.Remove(focusFilter);
-				OnPropertyChanged("Filters");
+				OnPropertyChanged(nameof(Filters));
 			}
 			ApplyFiltering();
 
