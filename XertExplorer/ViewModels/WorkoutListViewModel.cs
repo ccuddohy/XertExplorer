@@ -21,8 +21,21 @@ namespace XertExplorer.ViewModels
 		IXertClient _client;
 		public ICommand FilterCommand { get; set; }
 
+		public ICommand SortCommand { get; set; }
+
 		private bool _loggedOff;
-		
+
+		private enum SortingMethod
+		{
+			None,
+			Duration,
+			Difficulty,
+			AdvisorScore,
+			Rating
+		};
+
+		SortingMethod _currentSortingMethod;
+
 		/// <summary>
 		/// The state of the users login status
 		/// </summary>
@@ -38,6 +51,20 @@ namespace XertExplorer.ViewModels
 				LoggedOn = !value;
 				OnPropertyChanged(nameof(LoggedOff));
 				OnPropertyChanged(nameof(LoggedOn));
+			}
+		}
+
+		private bool _workoutsLoaded;
+		public bool WorkoutsLoaded
+		{
+			get
+			{
+				return _workoutsLoaded;
+			}
+			set
+			{
+				_workoutsLoaded = value;
+				OnPropertyChanged(nameof(WorkoutsLoaded));
 			}
 		}
 
@@ -154,14 +181,14 @@ namespace XertExplorer.ViewModels
 
 		public WorkoutListViewModel()
 		{
-			//_allWorkOuts = new List<IXertWorkout>();
-			//WorkoutListFiltered = new List<IXertWorkout>();
+			_currentSortingMethod = SortingMethod.None;
+			WorkoutsLoaded = false;
 			LoggedOff = true;
-			//LoadDemoWorkouts();
-			//WorkoutListFiltered = _allWorkOuts;
+			LoadDemoWorkouts();
 
 			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecutFilterMethod);
 			Filters = new List<string>();
+			SortCommand = new RelayCommand(ExecuteSortMethod, CanSortMethod);
 			LoginCommand = new AsyncRelayCommand(Login, (ex) => StatusMessage = ex.Message);
 		}
 
@@ -184,26 +211,22 @@ namespace XertExplorer.ViewModels
 
 		private void LoadDemoWorkouts()
 		{
-			try
-			{
-				//string JSONtxt = File.ReadAllText("workouts.json");
-				//_allWorkOuts = JsonSerializer.Deserialize<List<IXertWorkout>>(JSONtxt);
+			_allWorkOuts = DeserializeWorkoutsFromFile("workouts.json");
+			WorkoutListFiltered = _allWorkOuts;
+			WorkoutsLoaded = true;
+			ApplyFiltering();
+			ApplySorting();
+			StatusMessage = string.Format("{0} Demo Workouts Loaded", _allWorkOuts.Count());
+		}
 
-
-				//byte[] jsonUtf8Bytes = File.ReadAllBytes("workouts.json");
-				//var options = new JsonReaderOptions
-				//{
-				//	AllowTrailingCommas = true,
-				//	CommentHandling = JsonCommentHandling.Skip
-				//};
-				//var utf8Reader = new Utf8JsonReader(jsonUtf8Bytes);
-				//_allWorkOuts = (List<IXertWorkout>)JsonSerializer.Deserialize<IXertWorkout>(ref utf8Reader);
-			}
-			catch (Exception ex)
+		static List<IXertWorkout> DeserializeWorkoutsFromFile(string fileName)
+		{
+			List<IXertWorkout> workouts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<IXertWorkout>>(File.ReadAllText(fileName), new Newtonsoft.Json.JsonSerializerSettings
 			{
-				int e = 1;
-			}
-			
+				TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto,
+				NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+			});
+			return workouts;
 		}
 
 		private async Task LoadAllWorkouts()
@@ -215,8 +238,13 @@ namespace XertExplorer.ViewModels
 			StatusMessage = "Loading Workouts...";
 			_allWorkOuts = await _client.GetUsersWorkouts();
 			WorkoutListFiltered = _allWorkOuts;
+			WorkoutsLoaded = true;
+			ApplyFiltering();
+			ApplySorting();
 			StatusMessage = string.Format("{0} Workouts Loaded", _allWorkOuts.Count());
 		}
+
+	
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void OnPropertyChanged(string propertyname)
@@ -247,6 +275,10 @@ namespace XertExplorer.ViewModels
 
 		private void ApplyFiltering()
 		{
+			if(null == Filters)
+			{
+				return;
+			}
 			if (Filters.Count > 0)
 			{
 				List<IXertWorkout> filteredItems = new List<IXertWorkout>();
@@ -281,6 +313,71 @@ namespace XertExplorer.ViewModels
 
 		}
 
+		private void ApplySorting()
+		{
+			if(_currentSortingMethod == SortingMethod.None)
+			{
+				return;
+			}
+			List<IXertWorkout> sortedWorkouts = new List<IXertWorkout>();
+			if (_currentSortingMethod == SortingMethod.Duration)
+			{
+				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.duration).ToList();
+			}
+			if (_currentSortingMethod == SortingMethod.Difficulty)
+			{
+				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.difficulty).ToList();
+			}
+			if (_currentSortingMethod == SortingMethod.AdvisorScore)
+			{
+				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.advisorScore).ToList();
+			}
+			if (_currentSortingMethod == SortingMethod.Rating)
+			{
+				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.rating).ToList();
+			}
+			WorkoutListFiltered = sortedWorkouts;
+		}
+
+		private void ExecuteSortMethod(object parameter)
+		{
+			var sortParam = (string)parameter;
+			if (String.Equals(sortParam, "Duration", StringComparison.OrdinalIgnoreCase))
+			{
+				_currentSortingMethod = SortingMethod.Duration;
+				
+			}
+			else if (String.Equals(sortParam, "Difficulty", StringComparison.OrdinalIgnoreCase))
+			{
+				_currentSortingMethod = SortingMethod.Difficulty;
+			}
+			else if(String.Equals(sortParam, "Advisor Score", StringComparison.OrdinalIgnoreCase))
+			{
+				_currentSortingMethod = SortingMethod.AdvisorScore;
+			}
+			else if (String.Equals(sortParam, "Rating", StringComparison.OrdinalIgnoreCase))
+			{
+				_currentSortingMethod = SortingMethod.Rating;
+			}
+			else
+			{
+				_currentSortingMethod = SortingMethod.None;
+			}
+			ApplySorting();
+		}
+		
+		private bool CanSortMethod(object parameter)
+		{
+			if (null == WorkoutListFiltered)
+			{
+				return false;
+			}
+			if (WorkoutListFiltered.Count == 0)
+			{
+				return false;
+			}
+			return true;
+		}
 
 	}
 }
