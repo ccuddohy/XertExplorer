@@ -3,7 +3,7 @@ This is a UI application. The primary objective of the app is to make an improve
 
 ### Solution Details
 This is a WPF application written using the MVVM design pattern. It uses a dll I wrote [XertClient](https://github.com/ccuddohy/XertClient) that wraps the public
-Xert API. Both the app and the dll were written using .Net core 3.0. 
+Xert API. Both the app and the dll were written using .Net core 3.1. 
 
 ### About Xert
 Xert is a tool for endurance athletes, cyclist and runners in particular, to analyze performance metrics. Among other things, Xert provides an Adaptive 
