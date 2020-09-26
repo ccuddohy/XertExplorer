@@ -7,8 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ViewComponents\ArrowDown.jpg" />
+    <None Remove="ViewComponents\ArrowUp.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="PasswordBoxMVVM" Version="2.0.0" />
     <PackageReference Include="xertclient" Version="1.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="ViewComponents\ArrowDown.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="ViewComponents\ArrowUp.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

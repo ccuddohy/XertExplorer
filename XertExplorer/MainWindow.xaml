@@ -26,30 +26,28 @@
 		</Grid.ColumnDefinitions>
 
 
-		
-
 		<StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Background="Silver" >
 			<Label Margin="10,0,0,0" Padding="0,5,20,0"  FontSize="30" FontFamily="Copperplate" Foreground="Teal" Content="Xert Explorer" />
 
 			<TextBlock Text="Username"  FontFamily="Arial" FontSize="14" Margin="50,10,0,0"/>
 			<TextBox FontFamily="Arial" FontSize="14"  Margin="5,0,0,0" Padding="2,5,0,0" Height="25" Width="160" 
 					 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding LoggedOff}"/>
-			
+
 
 			<TextBlock  FontFamily="Arial" FontSize="14" Margin="5,10,0,0" Text="Password" Visibility="{Binding LoggedOff, UpdateSourceTrigger=PropertyChanged, 
 				Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
-			
-			
+
+
 			<components:BindablePasswordBox Height="25" Width="160" FontFamily="Arial" FontSize="14" Margin="5,0,0,0" Padding="2,0,0,0"	Password="{Binding Password}"
 											Visibility="{Binding LoggedOff, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
-			
-			
+
+
 			<Button Height="25" Width="80" FontFamily="Arial" FontSize="14" Margin="10,0,0,0"  Command="{Binding LoginCommand}" Content="Login" 
 					Visibility="{Binding LoggedOff, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"/>
 
 			<Border BorderThickness="1" BorderBrush="Black" Height="30" Margin="3"  Visibility="{Binding HasStatusMessage, UpdateSourceTrigger=PropertyChanged, 
 				Converter={StaticResource BoolToVis}}">
-					<TextBlock Height="25" Width="220" FontFamily="Arial" FontSize="14" Padding="5,5,5,5" Margin="5,0,0,0" 
+				<TextBlock Height="25" Width="220" FontFamily="Arial" FontSize="14" Padding="5,5,5,5" Margin="5,0,0,0" 
 					   Text="{Binding StatusMessage}"  Visibility="{Binding HasStatusMessage, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVis}}"/>
 			</Border>
 		</StackPanel>
@@ -58,26 +56,21 @@
 			<Label HorizontalAlignment="Center"  Margin="0,0,0,0" Width="250" Padding="0,10,0,0" Content="Workouts"  FontSize="55" FontFamily="Arial"/>
 		</StackPanel>
 
+		
+		<StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Background="Silver" >
 
-
-		<StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Background="Silver">
-			
 			<TextBlock Padding="0,0,0,0" Text="{Binding FilteredWorkoutCount, StringFormat='Available Workouts: {0}'}" Height="25" Width="200"  Margin="10, 10, 10, 10" 
 					   FontSize="14" FontFamily="Arial" Visibility="{Binding WorkoutsLoaded, UpdateSourceTrigger=PropertyChanged,  Converter={StaticResource BoolToVis}}"/>
-			
-
-			<StackPanel Width="430" Orientation="Horizontal" Background="AliceBlue" Margin="1,1">
-				<TextBlock Text="Sort" Margin="10, 10, 0, 10" FontFamily="Arial" FontSize="15" Foreground="Blue"/>
 
 
-				<!--<Button x:Name="ToggleSortDirection" Height="25" Width="15" FontFamily="Arial" FontSize="12" Margin="0,3,0,0"  Command="{Binding SortDirection}" 
-						Content="V" Background="AliceBlue" BorderThickness="0" Foreground="Blue"/>-->
-				<Button Padding="0,5,0,5" Margin="0,0,0,0" Background="AliceBlue" BorderThickness="0" Width="15">
-					<StackPanel Orientation="Horizontal">
-						<Image Source="/ViewComponents/ArrowDown.jpg" />
+			<StackPanel Width="350" Orientation="Horizontal" Background="AliceBlue" Margin="1,1">
+				<TextBlock Text="Sort" Margin="10, 10, 3, 10" FontFamily="Arial" FontSize="15" Foreground="Blue"/>
+
+				<Button BorderThickness="0" Width="15" Height="30" Command="{Binding ToggleSortDirection}">   
+					<StackPanel Orientation="Horizontal"  >
+						<Image Source="{Binding PathSortOrderDirectionImage}" />  
 					</StackPanel>
 				</Button>
-
 
 				<RadioButton x:Name="radDuration" GroupName="Sorting" Content="Duration" IsChecked="False" Margin="5, 11, 0, 10" FontFamily="Arial" FontSize="14"
 					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radDuration, Path=Content}" ClickMode="Press"/>
@@ -85,14 +78,13 @@
 					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radDifficulty, Path=Content}" ClickMode="Press"/>
 				<RadioButton x:Name="radAdvisorScore" GroupName="Sorting" Content="Advisor Score" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
 					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radAdvisorScore, Path=Content}" ClickMode="Press"/>
-				<RadioButton x:Name="radRating" GroupName="Sorting" Content="Rating" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
-					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radRating, Path=Content}" ClickMode="Press" IsEnabled="False"/>
+			
 			</StackPanel>
 		</StackPanel>
 		<ListBox ItemsSource="{Binding  WorkoutListFiltered, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Grid.Row="3" Grid.Column="1"  >
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-				
+
 					<VirtualizingStackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10" Background="Beige" Width="980" >
 						<StackPanel Orientation="Horizontal">
 							<Border Width="350" Height="200" CornerRadius="5" Margin="10">
@@ -136,7 +128,7 @@
 						</MultiBinding>
 					</CheckBox.CommandParameter>
 				</CheckBox>
-				
+
 				<CheckBox Name="ClimberFltCkBox" Content="Climber"  Command="{Binding FilterCommand}">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">

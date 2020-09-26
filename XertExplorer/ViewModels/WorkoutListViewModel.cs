@@ -23,19 +23,68 @@ namespace XertExplorer.ViewModels
 
 		public ICommand SortCommand { get; set; }
 
-		private bool _loggedOff;
+		public ICommand ToggleSortDirection { get; set; }
 
-		private enum SortingMethod
+		private enum SortingParam
 		{
 			None,
 			Duration,
 			Difficulty,
-			AdvisorScore,
-			Rating
+			AdvisorScore
 		};
+		SortingParam _currentSortingParam;
 
-		SortingMethod _currentSortingMethod;
+		
+		const string _pathSortOrderAssendingImage = @"/ViewComponents/ArrowDown.jpg"; // the file properties need to be set to resource so they can be used at run-time
+		const string _pathSortOrderDescendingImage = @"/ViewComponents/ArrowUp.jpg"; // the file properties need to be set to resource so they can be used at run-time
 
+		private string _pathSortOrderDirectionImage;
+		public string PathSortOrderDirectionImage
+		{
+			get
+			{
+				return _pathSortOrderDirectionImage;
+			}
+			set
+			{
+				_pathSortOrderDirectionImage = value;
+				OnPropertyChanged(nameof(PathSortOrderDirectionImage));
+			}
+		}
+		private bool _assendingSortDirection;
+		public bool AssendingSortDirection
+		{
+			get
+			{
+				return _assendingSortDirection;
+			}
+			set
+			{
+				_assendingSortDirection = value;
+				if (_assendingSortDirection)
+				{
+					PathSortOrderDirectionImage = _pathSortOrderAssendingImage;
+				}
+				else
+				{
+					PathSortOrderDirectionImage = _pathSortOrderDescendingImage;
+				}
+				OnPropertyChanged(nameof(AssendingSortDirection));
+			}
+		}
+
+		private void ToggleSortOrderDirection(object parameter)
+		{
+			AssendingSortDirection = !AssendingSortDirection;
+			ApplySorting();
+		}
+
+		/// <summary>
+		/// The inverse of LoggedOff
+		/// </summary>
+		public bool LoggedOn { get; set; }
+
+		private bool _loggedOff;
 		/// <summary>
 		/// The state of the users login status
 		/// </summary>
@@ -67,11 +116,6 @@ namespace XertExplorer.ViewModels
 				OnPropertyChanged(nameof(WorkoutsLoaded));
 			}
 		}
-
-		/// <summary>
-		/// The inverse of LoggedOff
-		/// </summary>
-		public bool LoggedOn { get; set; }
 
 		/// <summary>
 		/// This is a List of all the workouts for the user. It is unfiltered and not sorted.
@@ -181,7 +225,8 @@ namespace XertExplorer.ViewModels
 
 		public WorkoutListViewModel()
 		{
-			_currentSortingMethod = SortingMethod.None;
+			_currentSortingParam = SortingParam.None;
+			AssendingSortDirection = true;
 			WorkoutsLoaded = false;
 			LoggedOff = true;
 			LoadDemoWorkouts();
@@ -190,6 +235,7 @@ namespace XertExplorer.ViewModels
 			Filters = new List<string>();
 			SortCommand = new RelayCommand(ExecuteSortMethod, CanSortMethod);
 			LoginCommand = new AsyncRelayCommand(Login, (ex) => StatusMessage = ex.Message);
+			ToggleSortDirection = new RelayCommand(ToggleSortOrderDirection, CanSortMethod);
 		}
 
 
@@ -215,7 +261,6 @@ namespace XertExplorer.ViewModels
 			WorkoutListFiltered = _allWorkOuts;
 			WorkoutsLoaded = true;
 			ApplyFiltering();
-			ApplySorting();
 			StatusMessage = string.Format("{0} Demo Workouts Loaded", _allWorkOuts.Count());
 		}
 
@@ -240,11 +285,8 @@ namespace XertExplorer.ViewModels
 			WorkoutListFiltered = _allWorkOuts;
 			WorkoutsLoaded = true;
 			ApplyFiltering();
-			ApplySorting();
 			StatusMessage = string.Format("{0} Workouts Loaded", _allWorkOuts.Count());
 		}
-
-	
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void OnPropertyChanged(string propertyname)
@@ -292,6 +334,7 @@ namespace XertExplorer.ViewModels
 			{
 				WorkoutListFiltered = _allWorkOuts;
 			}
+			ApplySorting();
 		}
 
 		private void ExecuteFilterMethod(object parameter)
@@ -310,31 +353,47 @@ namespace XertExplorer.ViewModels
 				OnPropertyChanged(nameof(Filters));
 			}
 			ApplyFiltering();
-
 		}
 
 		private void ApplySorting()
 		{
-			if(_currentSortingMethod == SortingMethod.None)
+			if(_currentSortingParam == SortingParam.None)
 			{
 				return;
 			}
 			List<IXertWorkout> sortedWorkouts = new List<IXertWorkout>();
-			if (_currentSortingMethod == SortingMethod.Duration)
+			if (_currentSortingParam == SortingParam.Duration)
 			{
-				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.duration).ToList();
+				if (AssendingSortDirection)
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.duration).ToList();
+				}
+				else
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderByDescending(o => o.duration).ToList();
+				}
 			}
-			if (_currentSortingMethod == SortingMethod.Difficulty)
+			if (_currentSortingParam == SortingParam.Difficulty)
 			{
-				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.difficulty).ToList();
+				if (AssendingSortDirection)
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.difficulty).ToList();
+				}
+				else
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderByDescending(o => o.difficulty).ToList();
+				}
 			}
-			if (_currentSortingMethod == SortingMethod.AdvisorScore)
+			if (_currentSortingParam == SortingParam.AdvisorScore)
 			{
-				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.advisorScore).ToList();
-			}
-			if (_currentSortingMethod == SortingMethod.Rating)
-			{
-				sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.rating).ToList();
+				if (AssendingSortDirection)
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.advisorScore).ToList();
+				}
+				else
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderByDescending(o => o.advisorScore).ToList();
+				}
 			}
 			WorkoutListFiltered = sortedWorkouts;
 		}
@@ -344,24 +403,20 @@ namespace XertExplorer.ViewModels
 			var sortParam = (string)parameter;
 			if (String.Equals(sortParam, "Duration", StringComparison.OrdinalIgnoreCase))
 			{
-				_currentSortingMethod = SortingMethod.Duration;
+				_currentSortingParam = SortingParam.Duration;
 				
 			}
 			else if (String.Equals(sortParam, "Difficulty", StringComparison.OrdinalIgnoreCase))
 			{
-				_currentSortingMethod = SortingMethod.Difficulty;
+				_currentSortingParam = SortingParam.Difficulty;
 			}
 			else if(String.Equals(sortParam, "Advisor Score", StringComparison.OrdinalIgnoreCase))
 			{
-				_currentSortingMethod = SortingMethod.AdvisorScore;
-			}
-			else if (String.Equals(sortParam, "Rating", StringComparison.OrdinalIgnoreCase))
-			{
-				_currentSortingMethod = SortingMethod.Rating;
+				_currentSortingParam = SortingParam.AdvisorScore;
 			}
 			else
 			{
-				_currentSortingMethod = SortingMethod.None;
+				_currentSortingParam = SortingParam.None;
 			}
 			ApplySorting();
 		}
@@ -378,6 +433,5 @@ namespace XertExplorer.ViewModels
 			}
 			return true;
 		}
-
 	}
 }
