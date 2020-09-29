@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Remove="ViewComponents\ArrowDown.jpg" />
     <None Remove="ViewComponents\ArrowUp.jpg" />
+    <None Remove="ViewComponents\magnifying-glass2.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +24,7 @@
     <Resource Include="ViewComponents\ArrowUp.jpg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="ViewComponents\magnifying-glass2.png" />
   </ItemGroup>
 
   <ItemGroup>

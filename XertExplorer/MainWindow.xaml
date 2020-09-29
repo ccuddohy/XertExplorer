@@ -59,28 +59,39 @@
 		
 		<StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Background="Silver" >
 
-			<TextBlock Padding="0,0,0,0" Text="{Binding FilteredWorkoutCount, StringFormat='Available Workouts: {0}'}" Height="25" Width="200"  Margin="10, 10, 10, 10" 
+			<TextBlock Padding="0,0,0,0" Text="{Binding FilteredWorkoutCount, StringFormat='Available Workouts: {0}'}" Height="25" Width="180"  Margin="10, 10, 10, 10" 
 					   FontSize="14" FontFamily="Arial" Visibility="{Binding WorkoutsLoaded, UpdateSourceTrigger=PropertyChanged,  Converter={StaticResource BoolToVis}}"/>
-
-
-			<StackPanel Width="350" Orientation="Horizontal" Background="AliceBlue" Margin="1,1">
+			<StackPanel Width="475" Orientation="Horizontal" Background="AliceBlue" Margin="1,1">
 				<TextBlock Text="Sort" Margin="10, 10, 3, 10" FontFamily="Arial" FontSize="15" Foreground="Blue"/>
-
 				<Button BorderThickness="0" Width="15" Height="30" Command="{Binding ToggleSortDirection}">   
 					<StackPanel Orientation="Horizontal"  >
 						<Image Source="{Binding PathSortOrderDirectionImage}" />  
 					</StackPanel>
 				</Button>
-
-				<RadioButton x:Name="radDuration" GroupName="Sorting" Content="Duration" IsChecked="False" Margin="5, 11, 0, 10" FontFamily="Arial" FontSize="14"
+				<RadioButton x:Name="radName" GroupName="Sorting" Content="Name" IsChecked="True" Margin="5, 11, 0, 10" FontFamily="Arial" FontSize="14"
+					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radName, Path=Content}" ClickMode="Press"/>
+				<RadioButton x:Name="radDuration" GroupName="Sorting" Content="Duration" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
 					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radDuration, Path=Content}" ClickMode="Press"/>
+				<RadioButton x:Name="radXSS" GroupName="Sorting" Content="XSS" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
+					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radXSS, Path=Content}" ClickMode="Press"/>
 				<RadioButton x:Name="radDifficulty" GroupName="Sorting" Content="Difficulty" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
 					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radDifficulty, Path=Content}" ClickMode="Press"/>
 				<RadioButton x:Name="radAdvisorScore" GroupName="Sorting" Content="Advisor Score" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
 					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radAdvisorScore, Path=Content}" ClickMode="Press"/>
-			
 			</StackPanel>
+			
+			<StackPanel Orientation="Horizontal">
+				<TextBox FontFamily="Arial" FontSize="14"  Margin="100,0,0,0" Padding="2,5,0,0" Height="30" Width="200" 
+						 Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}" />
+				<Button BorderThickness="0" Width="40" Height="30" Command="{Binding FilterCommand}">
+					<StackPanel Orientation="Horizontal"  >
+						<Image Source="ViewComponents\magnifying-glass2.png" />
+					</StackPanel>
+				</Button>
+			</StackPanel>
+			
 		</StackPanel>
+
 		<ListBox ItemsSource="{Binding  WorkoutListFiltered, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Grid.Row="3" Grid.Column="1"  >
 			<ListBox.ItemTemplate>
 				<DataTemplate>
@@ -100,12 +111,19 @@
 									<TextBlock Padding="40,10,0,10"  Text="{Binding name, StringFormat={}{0}}" FontSize="16" FontFamily="Franklin Gothic Medium"/>
 								</StackPanel>
 								<StackPanel>
-									<TextBlock Padding="0,0,0,3" Text="{Binding focus, StringFormat='- Focus: {0}'}" FontSize="12" FontFamily="Arial"/>
-									<TextBlock Padding="0,0,0,3" Text="{Binding difficulty, StringFormat='- Difficulty: {0:#,#}'}" FontSize="12" FontFamily="Arial"/>
-									<TextBlock Padding="0,0,0,3" Text="{Binding rating, StringFormat='- Rating: {0}'}" FontSize="12" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,3" Text="{Binding focus, StringFormat='- Focus: {0}'}" FontSize="12" FontFamily="Arial" 
+											   ToolTip="Refers to the athlete type associated with the primary energy duration of the workout"/>
 									<TextBlock Padding="0,0,0,3" Text="{Binding duration, StringFormat='- Duration: {0}'}" FontSize="12" FontFamily="Arial"/>
-									<TextBlock Padding="0,0,0,10" Text="{Binding advisorScore, StringFormat='- AdvisorScore: {0:#,#}'}" FontSize="12" FontFamily="Arial"/>
-									<TextBlock Padding="0,0,0,0" MaxWidth="580" TextWrapping="Wrap" Text="{Binding description, StringFormat='- Description:{0}'}" FontSize="12" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,3" Text="{Binding xss, StringFormat='- XSS: {0:#,#}'}" FontSize="12" FontFamily="Arial" ToolTip="Xert Strain Score"/>
+									<TextBlock Padding="0,0,0,3" Text="{Binding difficulty, StringFormat='- Difficulty: {0:#,#}'}" FontSize="12" FontFamily="Arial"/>
+									<TextBlock Padding="0,0,0,3" Text="{Binding advisorScore, StringFormat='- AdvisorScore: {0:#,#}'}" FontSize="12" FontFamily="Arial" 
+											   ToolTip="The lower the value the higher the recommendation"/>
+									<TextBlock Padding="0,0,0,3" Text="{Binding rating, StringFormat='- Rating: {0}'}" FontSize="12" FontFamily="Arial"/>
+									<TextBlock Padding="0,3,0,0" Text="Description:" FontSize="12" FontFamily="Arial" FontWeight="DemiBold"/>
+									<TextBox Padding="0,0,0,0" TextWrapping="Wrap" Text="{Binding description, StringFormat=' {0}'}" IsReadOnly="True" BorderThickness="0"
+											 VerticalScrollBarVisibility="Auto" Height="80" Width="600" Background="Transparent"/>
+
+
 								</StackPanel>
 							</StackPanel>
 						</StackPanel>
@@ -120,7 +138,7 @@
 			<TextBlock Margin="5,0,0,0" Text="Focus" FontSize="16" FontFamily="Arial" FontWeight="Medium"/>
 			<TextBlock Margin="5,0,0,5" Text="Select to show" FontSize="11" FontFamily="Arial" FontWeight="UltraLight" />
 			<StackPanel Orientation="Vertical" Margin="10, 0">
-				<CheckBox x:Name="EnduranceFltCkBox" Content="Endurance" Command="{Binding FilterCommand}" >
+				<CheckBox x:Name="EnduranceFltCkBox" Content="Endurance" Command="{Binding FilterCommand}" ToolTip="20 minute and over focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
 							<Binding ElementName="EnduranceFltCkBox" Path="Content"/>
@@ -129,7 +147,7 @@
 					</CheckBox.CommandParameter>
 				</CheckBox>
 
-				<CheckBox Name="ClimberFltCkBox" Content="Climber"  Command="{Binding FilterCommand}">
+				<CheckBox Name="ClimberFltCkBox" Content="Climber"  Command="{Binding FilterCommand}" ToolTip="10 minute focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
 							<Binding ElementName="ClimberFltCkBox" Path="Content"/>
@@ -138,7 +156,7 @@
 					</CheckBox.CommandParameter>
 				</CheckBox>
 
-				<CheckBox Name="GSFltCkBox" Content="GC Specialist"  Command="{Binding FilterCommand}" >
+				<CheckBox Name="GSFltCkBox" Content="GC Specialist"  Command="{Binding FilterCommand}" ToolTip="8 minute focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
 							<Binding ElementName="GSFltCkBox" Path="Content"/>
@@ -147,16 +165,16 @@
 					</CheckBox.CommandParameter>
 				</CheckBox>
 
-				<CheckBox Name="RoulerFltCkBox" Content="Rouler"  Command="{Binding FilterCommand}">
+				<CheckBox Name="RouleurFltCkBox" Content="Rouleur"  Command="{Binding FilterCommand}" ToolTip="6 minute focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
-							<Binding ElementName="RoulerFltCkBox" Path="Content"/>
-							<Binding ElementName="RoulerFltCkBox" Path="IsChecked"/>
+							<Binding ElementName="RouleurFltCkBox" Path="Content"/>
+							<Binding ElementName="RouleurFltCkBox" Path="IsChecked"/>
 						</MultiBinding>
 					</CheckBox.CommandParameter>
 				</CheckBox>
 
-				<CheckBox Name="BreakAwyFltCkBox" Content="Breakaway"  Command="{Binding FilterCommand}">
+				<CheckBox Name="BreakAwyFltCkBox" Content="Breakaway"  Command="{Binding FilterCommand}" ToolTip="5 minute focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
 							<Binding ElementName="BreakAwyFltCkBox" Path="Content"/>
@@ -165,7 +183,7 @@
 					</CheckBox.CommandParameter>
 				</CheckBox>
 
-				<CheckBox Name="PuncheurFltCkBox" Content="Puncheur"  Command="{Binding FilterCommand}" >
+				<CheckBox Name="PuncheurFltCkBox" Content="Puncheur"  Command="{Binding FilterCommand}" ToolTip="4 minute focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
 							<Binding ElementName="PuncheurFltCkBox" Path="Content"/>
@@ -174,7 +192,7 @@
 					</CheckBox.CommandParameter>
 				</CheckBox>
 
-				<CheckBox Name="PursuiterFltCkBox" Content="Pursuiter"  Command="{Binding FilterCommand}" >
+				<CheckBox Name="PursuiterFltCkBox" Content="Pursuiter"  Command="{Binding FilterCommand}" ToolTip="3 to 4 minute focus" >
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
 							<Binding ElementName="PursuiterFltCkBox" Path="Content"/>
@@ -183,7 +201,7 @@
 					</CheckBox.CommandParameter>
 				</CheckBox>
 
-				<CheckBox Name="RoadSprinterFltCkBox" Content="Road Sprinter"  Command="{Binding FilterCommand}">
+				<CheckBox Name="RoadSprinterFltCkBox" Content="Road Sprinter"  Command="{Binding FilterCommand}" ToolTip="2 minute focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
 							<Binding ElementName="RoadSprinterFltCkBox" Path="Content"/>

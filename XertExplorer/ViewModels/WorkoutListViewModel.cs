@@ -20,15 +20,16 @@ namespace XertExplorer.ViewModels
 	{
 		IXertClient _client;
 		public ICommand FilterCommand { get; set; }
-
 		public ICommand SortCommand { get; set; }
-
 		public ICommand ToggleSortDirection { get; set; }
+		
 
 		private enum SortingParam
 		{
 			None,
+			Name,
 			Duration,
+			XSS,
 			Difficulty,
 			AdvisorScore
 		};
@@ -70,6 +71,20 @@ namespace XertExplorer.ViewModels
 					PathSortOrderDirectionImage = _pathSortOrderDescendingImage;
 				}
 				OnPropertyChanged(nameof(AssendingSortDirection));
+			}
+		}
+
+		private string _searchString;
+		public string SearchString
+		{
+			get
+			{
+				return _searchString;
+			}
+			set
+			{
+				_searchString = value;
+				OnPropertyChanged(nameof(SearchString));
 			}
 		}
 
@@ -225,17 +240,17 @@ namespace XertExplorer.ViewModels
 
 		public WorkoutListViewModel()
 		{
-			_currentSortingParam = SortingParam.None;
+			_currentSortingParam = SortingParam.Name;
 			AssendingSortDirection = true;
 			WorkoutsLoaded = false;
 			LoggedOff = true;
+			Filters = new List<string>(); 
 			LoadDemoWorkouts();
 
-			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecutFilterMethod);
-			Filters = new List<string>();
+			FilterCommand = new RelayCommand(ExecuteFilterMethod, CanexecuteFilterMethod);
 			SortCommand = new RelayCommand(ExecuteSortMethod, CanSortMethod);
 			LoginCommand = new AsyncRelayCommand(Login, (ex) => StatusMessage = ex.Message);
-			ToggleSortDirection = new RelayCommand(ToggleSortOrderDirection, CanSortMethod);
+			ToggleSortDirection = new RelayCommand(ToggleSortOrderDirection, CanToggleSortOrderDirection);
 		}
 
 
@@ -291,6 +306,10 @@ namespace XertExplorer.ViewModels
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void OnPropertyChanged(string propertyname)
 		{
+			if(propertyname == "SearchString")
+			{
+				ApplyFiltering();
+			}
 			if (PropertyChanged != null)
 			{
 				PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
@@ -302,9 +321,9 @@ namespace XertExplorer.ViewModels
 		/// </summary>
 		/// <param name="parameter"></param>
 		/// <returns></returns>
-		private bool CanexecutFilterMethod(object parameter)
+		private bool CanexecuteFilterMethod(object parameter)
 		{
-			if(null == _allWorkOuts )
+			if (null == _allWorkOuts )
 			{
 				return false;
 			}
@@ -314,54 +333,54 @@ namespace XertExplorer.ViewModels
 			}
 			return true;
 		}
-
+		
 		private void ApplyFiltering()
 		{
-			if(null == Filters)
-			{
-				return;
-			}
 			if (Filters.Count > 0)
 			{
 				List<IXertWorkout> filteredItems = new List<IXertWorkout>();
 				foreach (string filer in Filters)
 				{
-					filteredItems.AddRange(_allWorkOuts.Where(X => X.focus == filer));
+					filteredItems = _allWorkOuts.Where(X => X.focus == filer).ToList();
+				}
+				if (!string.IsNullOrEmpty(SearchString))
+				{
+					filteredItems = filteredItems.Where(w => w.name.Contains(SearchString, StringComparison.OrdinalIgnoreCase) 
+						|| w.description.Contains(SearchString, StringComparison.OrdinalIgnoreCase)).ToList();
 				}
 				WorkoutListFiltered = filteredItems;
 			}
 			else
 			{
-				WorkoutListFiltered = _allWorkOuts;
+				List<IXertWorkout> filteredItems = new List<IXertWorkout>();
+				if (!string.IsNullOrEmpty(SearchString))
+				{
+					filteredItems = _allWorkOuts.Where(w => w.name.Contains(SearchString, StringComparison.OrdinalIgnoreCase)
+						|| w.description.Contains(SearchString, StringComparison.OrdinalIgnoreCase)).ToList();
+					WorkoutListFiltered = filteredItems;
+				}
+				else 
+				{
+					WorkoutListFiltered = _allWorkOuts;
+				}
 			}
 			ApplySorting();
 		}
 
-		private void ExecuteFilterMethod(object parameter)
-		{
-			var values = (object[])parameter;
-			string focusFilter = (string)values[0];
-			bool check = (bool)values[1];
-			if (check)
-			{
-				Filters.Add(focusFilter);
-				OnPropertyChanged(nameof(Filters));
-			}
-			else
-			{
-				Filters.Remove(focusFilter);
-				OnPropertyChanged(nameof(Filters));
-			}
-			ApplyFiltering();
-		}
-
 		private void ApplySorting()
 		{
-			if(_currentSortingParam == SortingParam.None)
+			List<IXertWorkout> sortedWorkouts = WorkoutListFiltered;
+			if (_currentSortingParam == SortingParam.Name)
 			{
-				return;
+				if (AssendingSortDirection)
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.name).ToList();
+				}
+				else
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderByDescending(o => o.name).ToList();
+				}
 			}
-			List<IXertWorkout> sortedWorkouts = new List<IXertWorkout>();
 			if (_currentSortingParam == SortingParam.Duration)
 			{
 				if (AssendingSortDirection)
@@ -371,6 +390,17 @@ namespace XertExplorer.ViewModels
 				else
 				{
 					sortedWorkouts = WorkoutListFiltered.OrderByDescending(o => o.duration).ToList();
+				}
+			}
+			if (_currentSortingParam == SortingParam.XSS)
+			{
+				if (AssendingSortDirection)
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderBy(o => o.xss).ToList();
+				}
+				else
+				{
+					sortedWorkouts = WorkoutListFiltered.OrderByDescending(o => o.xss).ToList();
 				}
 			}
 			if (_currentSortingParam == SortingParam.Difficulty)
@@ -398,13 +428,42 @@ namespace XertExplorer.ViewModels
 			WorkoutListFiltered = sortedWorkouts;
 		}
 
+		private void ExecuteFilterMethod(object parameter)
+		{
+			if(null != parameter)
+			{
+				var values = (object[])parameter;
+				string focusFilter = (string)values[0];
+				bool check = (bool)values[1];
+				if (check)
+				{
+					Filters.Add(focusFilter);
+					OnPropertyChanged(nameof(Filters));
+				}
+				else
+				{
+					Filters.Remove(focusFilter);
+					OnPropertyChanged(nameof(Filters));
+				}
+			}
+			
+			ApplyFiltering();
+		}
+
 		private void ExecuteSortMethod(object parameter)
 		{
 			var sortParam = (string)parameter;
-			if (String.Equals(sortParam, "Duration", StringComparison.OrdinalIgnoreCase))
+			if (String.Equals(sortParam, "Name", StringComparison.OrdinalIgnoreCase))
+			{
+				_currentSortingParam = SortingParam.Name;
+			}
+			else if (String.Equals(sortParam, "Duration", StringComparison.OrdinalIgnoreCase))
 			{
 				_currentSortingParam = SortingParam.Duration;
-				
+			}
+			else if (String.Equals(sortParam, "XSS", StringComparison.OrdinalIgnoreCase))
+			{
+				_currentSortingParam = SortingParam.XSS;
 			}
 			else if (String.Equals(sortParam, "Difficulty", StringComparison.OrdinalIgnoreCase))
 			{
@@ -421,6 +480,24 @@ namespace XertExplorer.ViewModels
 			ApplySorting();
 		}
 		
+		private bool CanToggleSortOrderDirection(object parameter)
+		{
+			if (null == WorkoutListFiltered)
+			{
+				return false;
+			}
+			if (WorkoutListFiltered.Count == 0)
+			{
+				return false;
+			}
+			if(_currentSortingParam == SortingParam.None)
+			{
+				return false;
+			}
+			return true;
+		}
+
+
 		private bool CanSortMethod(object parameter)
 		{
 			if (null == WorkoutListFiltered)
