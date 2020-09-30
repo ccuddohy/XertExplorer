@@ -5,7 +5,7 @@ This is a UI application. The primary objective of the app is to make an improve
 This is a WPF application written using the MVVM design pattern. It uses a dll I wrote [XertClient](https://github.com/ccuddohy/XertClient) that wraps the public
 Xert API. Both the app and the dll were written using .Net core 3.1. 
 
-## Model / ViewModel
+#### Model / ViewModel
 The model in this application is a List of IXertWorkouts which is an object type I created in the XertClient dll. Elements of the List are never modified in the application. The ViewModel modifies the workout list presented to the view by filtering and sorting based on criteria the user enters. 
 
 ### About Xert
