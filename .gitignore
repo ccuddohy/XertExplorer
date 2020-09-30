@@ -1,11 +1,14 @@
 # most entries from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+
 # User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+*.log
 
 # Build results
 bld/
