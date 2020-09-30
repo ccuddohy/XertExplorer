@@ -1,6 +1,8 @@
 # XertExplorer
 This is a UI application. The primary objective of the app is to make an improved tool to find appropriate Xert workouts. 
 
+![](Images/ScreenShot.PNG)
+
 ### About Xert
 Xert is a tool for cyclists and runners that analyzes performance metrics from data uploaded into their system. With this analysis, Xert gives insight into training and recovery science. One of the tools  available to users is the Xert Training Advisor that gives guidance for workout selection based on the user's current fitness signature.   
 [Xert web site](https://www.xertonline.com/)
