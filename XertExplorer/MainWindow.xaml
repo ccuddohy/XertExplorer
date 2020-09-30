@@ -71,11 +71,14 @@
 				<RadioButton x:Name="radDuration" GroupName="Sorting" Content="Duration" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
 					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radDuration, Path=Content}" ClickMode="Press"/>
 				<RadioButton x:Name="radXSS" GroupName="Sorting" Content="XSS" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
-					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radXSS, Path=Content}" ClickMode="Press"/>
+					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radXSS, Path=Content}" ClickMode="Press" 
+							 ToolTip="Xert Strain Score quantifies how much strain an athlete endures during an activity."/>
 				<RadioButton x:Name="radDifficulty" GroupName="Sorting" Content="Difficulty" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
-					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radDifficulty, Path=Content}" ClickMode="Press"/>
+					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radDifficulty, Path=Content}" ClickMode="Press"
+							 ToolTip="A measure of how much strain has accumulated over the course of a workout."/>
 				<RadioButton x:Name="radAdvisorScore" GroupName="Sorting" Content="Advisor Score" IsChecked="False" Margin="10, 11, 0, 10" FontFamily="Arial" FontSize="14"
-					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radAdvisorScore, Path=Content}" ClickMode="Press"/>
+					Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=radAdvisorScore, Path=Content}" ClickMode="Press" 
+							 ToolTip="The lower the value the higher the recommendation"/>
 			</StackPanel>
 			
 			<StackPanel Orientation="Horizontal">
@@ -125,14 +128,12 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
-
-
 		
 		<StackPanel Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" Orientation="Vertical" Margin="5,8,10,0" Background="LightBlue">
 			<TextBlock Margin="5,0,0,0" Padding="0,5,0,0" Text="Filters" Grid.Row="2" Grid.Column="0" FontSize="22" FontFamily="Arial" Foreground="Black" />
 			<StackPanel Orientation="Vertical" Margin="10, 0">
-				<TextBlock Margin="5,10,0,0" Text="Focus" FontSize="16" FontFamily="Arial" FontWeight="Medium"/>
-				<TextBlock Margin="5,0,0,5" Text="Select to show" FontSize="11" FontFamily="Arial" FontWeight="UltraLight" />
+				<TextBlock Margin="5,10,0,5" Text="Focus" FontSize="16" FontFamily="Arial" FontWeight="Medium"/>
+				
 				<CheckBox x:Name="EnduranceFltCkBox" Content="Endurance" Command="{Binding FocusFilterCommand}" ToolTip="20 minute and over focus">
 					<CheckBox.CommandParameter>
 						<MultiBinding Converter="{StaticResource cv}">
@@ -302,6 +303,58 @@
 				</CheckBox>
 
 			</StackPanel>
+
+			<StackPanel Orientation="Vertical" Margin="10, 0">
+				<TextBlock Margin="5,10,0,5" Text="Rating" FontSize="16" FontFamily="Arial" FontWeight="Medium"/>
+
+				<CheckBox x:Name="EasyCkBox" Content="Easy" Command="{Binding RatingFilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="EasyCkBox" Path="Content"/>
+							<Binding ElementName="EasyCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox x:Name="ModerateCkBox" Content="Moderate" Command="{Binding RatingFilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="ModerateCkBox" Path="Content"/>
+							<Binding ElementName="ModerateCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox x:Name="DifficultCkBox" Content="Difficult" Command="{Binding RatingFilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="DifficultCkBox" Path="Content"/>
+							<Binding ElementName="DifficultCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox x:Name="ToughCkBox" Content="Tough" Command="{Binding RatingFilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="ToughCkBox" Path="Content"/>
+							<Binding ElementName="ToughCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+				<CheckBox x:Name="HardCkBox" Content="Hard" Command="{Binding RatingFilterCommand}" >
+					<CheckBox.CommandParameter>
+						<MultiBinding Converter="{StaticResource cv}">
+							<Binding ElementName="HardCkBox" Path="Content"/>
+							<Binding ElementName="HardCkBox" Path="IsChecked"/>
+						</MultiBinding>
+					</CheckBox.CommandParameter>
+				</CheckBox>
+
+			</StackPanel>
+			
+			
 		</StackPanel>
 
 	</Grid>

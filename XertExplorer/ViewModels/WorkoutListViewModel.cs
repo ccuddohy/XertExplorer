@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using XertClient;
 using XertExplorer.Commands;
@@ -19,12 +20,13 @@ namespace XertExplorer.ViewModels
 {
 	public class WorkoutListViewModel : INotifyPropertyChanged
 	{
-		IXertClient _client;
+		private IXertClient _client;
 		public ICommand FocusFilterCommand { get; set; }
 		public ICommand DurationFilterCommand { get; set; }
 		public ICommand SortCommand { get; set; }
 		public ICommand ToggleSortDirection { get; set; }
-
+		public ICommand LoginCommand { get; set; }
+		public ICommand RatingFilterCommand { get; set; }
 
 		private enum SortingParam
 		{
@@ -36,12 +38,14 @@ namespace XertExplorer.ViewModels
 			AdvisorScore
 		};
 		SortingParam _currentSortingParam;
+		public List<string> FocusFilters { get; set; }
+		public List<string> DurationFilters { get; set; }
+		public List<string> RatingFilters { get; set; }
 
-
-		const string _pathSortOrderAssendingImage = @"/ViewComponents/ArrowDown.jpg"; // the file properties need to be set to resource so they can be used at run-time
-		const string _pathSortOrderDescendingImage = @"/ViewComponents/ArrowUp.jpg"; // the file properties need to be set to resource so they can be used at run-time
-		readonly TimeSpan _lowLimTimeSpan = new TimeSpan(0, 45, 0);
-		readonly TimeSpan _highLimTimeSpan = new TimeSpan(2, 30, 0);
+		private const string _pathSortOrderAssendingImage = @"/ViewComponents/ArrowDown.jpg"; // the file properties need to be set to resource so they can be used at run-time
+		private const string _pathSortOrderDescendingImage = @"/ViewComponents/ArrowUp.jpg"; // the file properties need to be set to resource so they can be used at run-time
+		private readonly TimeSpan _lowLimTimeSpan = new TimeSpan(0, 45, 0);
+		private readonly TimeSpan _highLimTimeSpan = new TimeSpan(2, 30, 0);
 		readonly TimeSpan _minuteIncrementTimeSpan = new TimeSpan(0, 15, 0);
 
 		private string _pathSortOrderDirectionImage;
@@ -146,7 +150,7 @@ namespace XertExplorer.ViewModels
 		/// a subset of _allWorkouts that is filtered to include only the focus parameters in FocusFilters
 		/// </summary>
 		private List<IXertWorkout> _focusFilteredWorkouts;
-
+			
 		/// <summary>
 		/// simply returns a count of all the unfiltered workouts for the user.
 		/// </summary>
@@ -211,14 +215,7 @@ namespace XertExplorer.ViewModels
 				OnPropertyChanged(nameof(Password));
 			}
 		}
-
-		public ICommand LoginCommand { get; }
-
-		public List<string> FocusFilters { get; set; }
-		public List<string> DurationFilters { get; set; }
-
-		
-
+	
 		public int FilteredWorkoutCount
 		{
 			get
@@ -259,10 +256,12 @@ namespace XertExplorer.ViewModels
 			LoggedOff = true;
 			FocusFilters = new List<string>();
 			DurationFilters = new List<string>();
+			RatingFilters = new List<string>();
 			LoadDemoWorkouts();
 
 			FocusFilterCommand = new RelayCommand(ExecuteFocusFilterMethod, CanexecuteFilterMethod);
 			DurationFilterCommand = new RelayCommand(ExecuteDurationFilterMethod, CanexecuteFilterMethod);
+			RatingFilterCommand = new RelayCommand(ExecuteRatingFilterMethod, CanexecuteFilterMethod);
 			SortCommand = new RelayCommand(ExecuteSortMethod, CanSortMethod);
 			LoginCommand = new AsyncRelayCommand(Login, (ex) => StatusMessage = ex.Message);
 			ToggleSortDirection = new RelayCommand(ToggleSortOrderDirection, CanToggleSortOrderDirection);
@@ -289,7 +288,7 @@ namespace XertExplorer.ViewModels
 		{
 			_allWorkouts = DeserializeWorkoutsFromFile("workouts.json");
 			WorkoutsLoaded = true;
-			ApplyAllFiltering();
+			ApplyAllFiltering(true);
 			StatusMessage = string.Format("{0} Demo Workouts Loaded", _allWorkouts.Count());
 		}
 
@@ -312,7 +311,7 @@ namespace XertExplorer.ViewModels
 			StatusMessage = "Loading Workouts...";
 			_allWorkouts = await _client.GetUsersWorkouts();
 			WorkoutsLoaded = true;
-			ApplyAllFiltering();
+			ApplyAllFiltering(true);
 			StatusMessage = string.Format("{0} Workouts Loaded", _allWorkouts.Count());
 		}
 
@@ -321,7 +320,7 @@ namespace XertExplorer.ViewModels
 		{
 			if(propertyname == "SearchString")
 			{
-				ApplySorting( ApplySearchFilter(_focusFilteredWorkouts));
+				ApplyAllFiltering(false);
 			}
 			if (PropertyChanged != null)
 			{
@@ -357,13 +356,29 @@ namespace XertExplorer.ViewModels
 			if (FocusFilters.Count > 0)
 			{
 				_focusFilteredWorkouts = new List<IXertWorkout>();
-				foreach (string filer in FocusFilters)
+				foreach (string focusFilter in FocusFilters)
 				{
-					_focusFilteredWorkouts.AddRange(_allWorkouts.Where(X => X.focus == filer));
+					_focusFilteredWorkouts.AddRange(_allWorkouts.Where(X => X.focus == focusFilter));
 				}
 				return;
 			}
 			_focusFilteredWorkouts =  _allWorkouts;
+		}
+
+
+		private List<IXertWorkout> ApplyRatingFilter(List<IXertWorkout> inputWorkouts)
+		{
+			if(RatingFilters.Count > 0)
+			{
+				List<IXertWorkout> RatingFilteredWorkouts = new List<IXertWorkout>();
+				foreach (string ratingFilter in RatingFilters)
+				{
+					RatingFilteredWorkouts.AddRange(inputWorkouts.Where(x => x.rating.Contains(ratingFilter)));
+				}
+				return RatingFilteredWorkouts;
+			}
+
+			return inputWorkouts;
 		}
 
 		/// <summary>
@@ -393,7 +408,7 @@ namespace XertExplorer.ViewModels
 			}
 			else
 			{
-				MessageBox.Show(string.Format("Error converting {0} to TimeSpan", input));
+				StatusMessage = string.Format("Error converting {0} to TimeSpan", input);
 				return new TimeSpan(0,0,0);
 			}
 		}
@@ -441,12 +456,16 @@ namespace XertExplorer.ViewModels
 		/// <summary>
 		/// Applies filtering to _allWorkouts and sorts the resulting list before setting it WorkoutListFilteredSorted
 		/// </summary>
-		private void ApplyAllFiltering()
+		private void ApplyAllFiltering(bool includeFocusFilter)
 		{
-			ApplyFocusFilter();
-			List<IXertWorkout> focusAndSearchFilteredWOs = ApplySearchFilter(_focusFilteredWorkouts);
+			if(includeFocusFilter)
+			{
+				ApplyFocusFilter();
+			}
+			List<IXertWorkout>  focusAndSearchFilteredWOs = ApplySearchFilter(_focusFilteredWorkouts);
 			List<IXertWorkout> focusSearchDurFilteredWOs = ApplyDurationFilter(focusAndSearchFilteredWOs);
-			ApplySorting(focusSearchDurFilteredWOs);
+			List<IXertWorkout> focusSearchDurRatingFilteredWOs = ApplyRatingFilter(focusSearchDurFilteredWOs);
+			ApplySorting(focusSearchDurRatingFilteredWOs);
 		}
 
 		/// <summary>
@@ -536,8 +555,28 @@ namespace XertExplorer.ViewModels
 					OnPropertyChanged(nameof(DurationFilters));
 				}
 			}
+			ApplyAllFiltering(false);
+		}
 
-			ApplyAllFiltering();
+		private void ExecuteRatingFilterMethod(object parameter)
+		{
+			if (null != parameter)
+			{
+				var values = (object[])parameter;
+				string ratingFilter = (string)values[0];
+				bool check = (bool)values[1];
+				if (check)
+				{
+					RatingFilters.Add(ratingFilter);
+					OnPropertyChanged(nameof(RatingFilters));
+				}
+				else
+				{
+					RatingFilters.Remove(ratingFilter);
+					OnPropertyChanged(nameof(RatingFilters));
+				}
+			}
+			ApplyAllFiltering(false);
 		}
 
 		private void ExecuteFocusFilterMethod(object parameter)
@@ -558,7 +597,7 @@ namespace XertExplorer.ViewModels
 					OnPropertyChanged(nameof(FocusFilters));
 				}
 			}
-			ApplyAllFiltering();
+			ApplyAllFiltering(true);
 		}
 
 		private void ExecuteSortMethod(object parameter)
